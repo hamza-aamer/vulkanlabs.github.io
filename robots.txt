@@ -1,0 +1,76 @@
+# Robots.txt for Vulkan Labs Website
+
+User-agent: *
+Allow: /
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Disallow access to certain directories if they exist
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /*.json$
+Disallow: /sw.js
+
+# Allow access to CSS and JS files
+Allow: /style.css
+Allow: /script.js
+Allow: /*.css
+Allow: /*.js
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://vulkanlabs.com/sitemap.xml
+
+# Additional directives for better SEO
+User-agent: *
+Disallow: /search?
+Disallow: /*?
+Allow: /*?utm_source=
+Allow: /*?utm_medium=
+Allow: /*?utm_campaign=
+
+# Block aggressive crawlers
+User-agent: AhrefsBot
+Crawl-delay: 86400
+
+User-agent: MJ12bot
+Crawl-delay: 86400
+
+User-agent: SemrushBot
+Crawl-delay: 86400
+
+# Allow social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
