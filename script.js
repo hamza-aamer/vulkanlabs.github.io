@@ -220,7 +220,7 @@ class VulkanLabsWebsite {
         });
 
         // Observe elements for scroll animations
-        document.querySelectorAll('.service-card, .project-card, .team-card, .stat-item').forEach(el => {
+        document.querySelectorAll('.service-card, .project-card, .stat-item').forEach(el => {
             el.classList.add('animate-on-scroll');
             observer.observe(el);
         });
@@ -502,50 +502,12 @@ class VulkanLabsWebsite {
         setInterval(draw, 50);
     }
 
-    // Glitch effect for text
-    createGlitchEffect(element) {
-        const originalText = element.textContent;
-        const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-        
-        let glitchInterval;
-        let isGlitching = false;
-        
-        element.addEventListener('mouseenter', () => {
-            if (isGlitching) return;
-            isGlitching = true;
-            
-            let iterations = 0;
-            glitchInterval = setInterval(() => {
-                element.textContent = originalText
-                    .split('')
-                    .map((char, index) => {
-                        if (index < iterations) return originalText[index];
-                        return glitchChars[Math.floor(Math.random() * glitchChars.length)];
-                    })
-                    .join('');
-                
-                if (iterations >= originalText.length) {
-                    clearInterval(glitchInterval);
-                    element.textContent = originalText;
-                    isGlitching = false;
-                }
-                
-                iterations += 1 / 3;
-            }, 30);
-        });
-    }
-
     // Initialize advanced features
     initAdvancedFeatures() {
         // Matrix rain effect
         if (window.innerWidth > 768) {
             this.createMatrixRain();
         }
-        
-        // Glitch effects on specific elements
-        document.querySelectorAll('.hero-title, .section-title').forEach(el => {
-            this.createGlitchEffect(el);
-        });
         
         // Add floating action button
         this.createFloatingActionButton();
