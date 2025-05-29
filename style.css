@@ -422,22 +422,24 @@ body {
     padding: var(--container-padding);
 }
 
+/* Hero Title */
 .hero-title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 1.5rem;
+    text-align: center;
+    position: relative;
+    color: white;
 }
 
 .title-line {
     display: block;
-    opacity: 0;
-    transform: translateY(30px);
-    animation: slideInUp 1s ease forwards;
+    margin-bottom: 0.2rem;
 }
 
-.title-line:nth-child(2) {
-    animation-delay: 0.2s;
+.title-line:last-child {
+    margin-bottom: 0;
 }
 
 .gradient-text {
@@ -445,13 +447,14 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    position: relative;
 }
 
-/* Intense Constant Glitch Effect */
+/* Toned Down Glitch Effect */
 .glitch-text {
     position: relative;
     display: inline-block;
-    animation: textGlitch 0.1s infinite;
+    animation: textGlitch 0.3s infinite;
 }
 
 .glitch-text::before,
@@ -468,45 +471,39 @@ body {
 }
 
 .glitch-text::before {
-    animation: glitch-1 0.3s infinite;
+    animation: glitch-1 0.8s infinite;
     color: #ff0040;
-    opacity: 0.8;
+    opacity: 0.6;
     mix-blend-mode: screen;
 }
 
 .glitch-text::after {
-    animation: glitch-2 0.4s infinite;
+    animation: glitch-2 1s infinite;
     color: #ec4899;
-    opacity: 0.8;
+    opacity: 0.5;
     mix-blend-mode: screen;
 }
 
-/* Intense hover effect */
+/* Enhanced hover effect */
 .glitch-text:hover::before {
-    animation: glitch-1 0.1s infinite;
-    opacity: 1;
+    animation: glitch-1 0.3s infinite;
+    opacity: 0.8;
 }
 
 .glitch-text:hover::after {
-    animation: glitch-2 0.15s infinite;
-    opacity: 1;
+    animation: glitch-2 0.4s infinite;
+    opacity: 0.7;
 }
 
 
 @keyframes textGlitch {
-    0%, 95%, 100% {
+    0%, 98%, 100% {
         transform: translate(0);
     }
-    5% {
+    2% {
         transform: translate(-1px, 0);
     }
-    10% {
-        transform: translate(1px, 0);
-    }
-    15% {
-        transform: translate(-1px, 0);
-    }
-    20% {
+    4% {
         transform: translate(1px, 0);
     }
 }
@@ -514,93 +511,92 @@ body {
 @keyframes glitch-1 {
     0%, 100% {
         transform: translate(0);
-        opacity: 0.8;
+        opacity: 0.6;
     }
     10% {
-        transform: translate(-5px, 2px);
-        opacity: 1;
-    }
-    20% {
-        transform: translate(5px, -2px);
-        opacity: 1;
-    }
-    30% {
-        transform: translate(-3px, 3px);
+        transform: translate(-2px, 1px);
         opacity: 0.8;
     }
+    20% {
+        transform: translate(2px, -1px);
+        opacity: 0.7;
+    }
+    30% {
+        transform: translate(-1px, 2px);
+        opacity: 0.6;
+    }
     40% {
-        transform: translate(3px, -3px);
-        opacity: 1;
+        transform: translate(1px, -2px);
+        opacity: 0.8;
     }
     50% {
-        transform: translate(-2px, 1px);
-        opacity: 0.9;
+        transform: translate(-2px, 0);
+        opacity: 0.7;
     }
     60% {
-        transform: translate(2px, -1px);
-        opacity: 1;
+        transform: translate(2px, 1px);
+        opacity: 0.6;
     }
     70% {
-        transform: translate(-4px, 2px);
+        transform: translate(-1px, -1px);
         opacity: 0.8;
     }
     80% {
-        transform: translate(4px, -2px);
-        opacity: 1;
+        transform: translate(1px, 2px);
+        opacity: 0.7;
     }
     90% {
-        transform: translate(-1px, 1px);
-        opacity: 0.9;
+        transform: translate(-1px, 0);
+        opacity: 0.6;
     }
 }
 
 @keyframes glitch-2 {
     0%, 100% {
         transform: translate(0);
-        opacity: 0.7;
+        opacity: 0.5;
     }
     5% {
-        transform: translate(4px, -3px);
-        opacity: 1;
+        transform: translate(2px, -1px);
+        opacity: 0.7;
     }
     15% {
-        transform: translate(-4px, 3px);
-        opacity: 0.9;
+        transform: translate(-2px, 1px);
+        opacity: 0.6;
     }
     25% {
-        transform: translate(3px, -2px);
-        opacity: 1;
+        transform: translate(1px, -2px);
+        opacity: 0.7;
     }
     35% {
-        transform: translate(-3px, 2px);
-        opacity: 0.8;
+        transform: translate(-1px, 2px);
+        opacity: 0.5;
     }
     45% {
-        transform: translate(2px, -4px);
-        opacity: 1;
+        transform: translate(2px, -2px);
+        opacity: 0.6;
     }
     55% {
-        transform: translate(-2px, 4px);
-        opacity: 0.9;
+        transform: translate(-2px, 2px);
+        opacity: 0.7;
     }
     65% {
-        transform: translate(5px, -1px);
-        opacity: 1;
+        transform: translate(1px, -1px);
+        opacity: 0.5;
     }
     75% {
-        transform: translate(-5px, 1px);
-        opacity: 0.8;
+        transform: translate(-1px, 1px);
+        opacity: 0.6;
     }
     85% {
-        transform: translate(1px, -3px);
-        opacity: 0.9;
+        transform: translate(2px, 0);
+        opacity: 0.7;
     }
     95% {
-        transform: translate(-1px, 3px);
-        opacity: 0.8;
+        transform: translate(-1px, -2px);
+        opacity: 0.5;
     }
 }
-
 
 @keyframes slideInUp {
     to {
