@@ -412,50 +412,61 @@ body {
     pointer-events: none;
 }
 
+/* FORCED Hero Title Alignment */
+.hero-title {
+    font-size: clamp(2.5rem, 8vw, 4.5rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1.5rem !important;
+    text-align: left !important;
+    position: relative !important;
+    color: white !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+.title-line-1,
+.title-line-2 {
+    display: inline !important;
+    white-space: nowrap !important;
+}
+
+.title-line-1 {
+    color: white !important;
+}
+
+.title-line-2 {
+    background: var(--gradient-primary) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+/* FORCE Hero Content Left Alignment */
 .hero-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: var(--container-padding);
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 4rem !important;
+    align-items: center !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    padding: var(--container-padding) !important;
 }
 
 .hero-text {
-    text-align: left;  /* ENSURE LEFT ALIGNMENT */
+    text-align: left !important;
+    align-self: center !important;
 }
 
 .hero-subtitle {
-    font-size: 1.25rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
+    font-size: 1.25rem !important;
+    color: var(--text-secondary) !important;
+    margin-bottom: 2rem !important;
+    text-align: left !important;
     opacity: 0;
     animation: fadeInUp 1s ease 0.4s forwards;
-    text-align: left;  /* LEFT ALIGNED */
 }
 
-
-
-/* Hero Title */
-.hero-title {
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    text-align: left;  /* CHANGED FROM CENTER */
-    position: relative;
-    color: white;
-}
-
-.title-line {
-    display: block;
-    margin-bottom: 0.2rem;
-}
-
-.title-line:last-child {
-    margin-bottom: 0;
-}
 
 .gradient-text {
     background: var(--gradient-primary);
