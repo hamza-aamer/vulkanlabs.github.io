@@ -1251,13 +1251,14 @@ class VulkanScrollAnimations {
                 title.classList.add('glitch-text');
                 title.setAttribute('data-text', title.textContent);
                 
-                // Trigger glitch effect periodically
-                setInterval(() => {
+
+                // Also trigger on page load after delay
+                setTimeout(() => {
                     title.classList.add('active');
                     setTimeout(() => {
                         title.classList.remove('active');
-                    }, 2000);
-                }, 8000); // Every 8 seconds
+                    }, 1500);
+                }, 3000);
             }
         });
     }
