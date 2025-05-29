@@ -1,4 +1,4 @@
-// Advanced JavaScript for Vulkan Labs Website
+// Complete JavaScript for Vulkan Labs Website with Dynamic Animations
 
 class VulkanLabsWebsite {
     constructor() {
@@ -762,6 +762,461 @@ class VulkanLabsWebsite {
     }
 }
 
+// Advanced Dynamic Scroll Animations Class
+class VulkanScrollAnimations {
+    constructor() {
+        this.init();
+        this.setupScrollObserver();
+        this.createDynamicBackground();
+        this.setupMouseEffects();
+        this.createDataVisualization();
+        this.setupGlitchEffects();
+    }
+
+    init() {
+        // Initialize animation system
+        this.scrollProgress = 0;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.particles = [];
+        this.networkNodes = [];
+        
+        // Create dynamic background elements
+        this.createMorphingShapes();
+        this.createNetworkGrid();
+        this.createFloatingCode();
+        
+        // Setup scroll listener with throttling
+        this.setupScrollListener();
+    }
+
+    createMorphingShapes() {
+        const morphBg = document.createElement('div');
+        morphBg.className = 'vulkan-morph-bg';
+        
+        for (let i = 1; i <= 3; i++) {
+            const blob = document.createElement('div');
+            blob.className = `morph-blob morph-blob-${i}`;
+            morphBg.appendChild(blob);
+        }
+        
+        document.body.appendChild(morphBg);
+        
+        // Animate blobs based on scroll
+        this.morphBlobs = morphBg.querySelectorAll('.morph-blob');
+    }
+
+    createNetworkGrid() {
+        const networkContainer = document.createElement('div');
+        networkContainer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        `;
+        
+        // Create network lines
+        for (let i = 0; i < 20; i++) {
+            const line = document.createElement('div');
+            line.className = 'network-line';
+            line.style.cssText = `
+                top: ${Math.random() * 100}%;
+                left: ${Math.random() * 100}%;
+                width: ${Math.random() * 200 + 100}px;
+                transform: rotate(${Math.random() * 180}deg);
+                animation-delay: ${Math.random() * 4}s;
+            `;
+            networkContainer.appendChild(line);
+        }
+        
+        document.body.appendChild(networkContainer);
+    }
+
+    createFloatingCode() {
+        const codeSnippets = [
+            'def neural_network():', 'import torch', 'class GPU_Accelerator:',
+            'cudaMalloc(&ptr, size)', 'glCreateShader(GL_VERTEX)', 
+            'vkCreateDevice()', 'tensorflow.keras', 'numpy.array()',
+            'cv2.imread()', 'sklearn.model', 'async def compute():', 
+            'from transformers import', 'pytorch.nn.Conv2d'
+        ];
+        
+        const container = document.createElement('div');
+        container.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        `;
+        
+        // Create floating code particles
+        setInterval(() => {
+            if (container.children.length < 15 && window.innerWidth > 768) {
+                const particle = document.createElement('div');
+                particle.className = 'code-particle';
+                particle.textContent = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+                particle.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    animation-duration: ${Math.random() * 10 + 15}s;
+                    animation-delay: ${Math.random() * 5}s;
+                `;
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.remove();
+                    }
+                }, 20000);
+            }
+        }, 2000);
+        
+        document.body.appendChild(container);
+    }
+
+    setupScrollListener() {
+        let ticking = false;
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    this.updateScrollEffects();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+        
+        // Add scroll progress indicator
+        const progressBar = document.createElement('div');
+        progressBar.className = 'scroll-progress';
+        progressBar.innerHTML = '<div class="scroll-progress-bar"></div>';
+        document.body.appendChild(progressBar);
+        
+        this.progressBar = progressBar.querySelector('.scroll-progress-bar');
+    }
+
+    updateScrollEffects() {
+        const scrollTop = window.pageYOffset;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        this.scrollProgress = scrollTop / docHeight;
+        
+        // Update progress bar
+        this.progressBar.style.width = `${this.scrollProgress * 100}%`;
+        
+        // Update morphing shapes
+        this.morphBlobs.forEach((blob, index) => {
+            const rotation = this.scrollProgress * 360 * (index + 1);
+            const scale = 1 + Math.sin(this.scrollProgress * Math.PI * 4) * 0.2;
+            const translateY = Math.sin(this.scrollProgress * Math.PI * 2) * 50;
+            const translateX = Math.cos(this.scrollProgress * Math.PI * 2) * 30;
+            
+            blob.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${rotation}deg) scale(${scale})`;
+        });
+        
+        // Parallax effect for sections
+        this.updateParallaxElements();
+    }
+
+    updateParallaxElements() {
+        const elements = document.querySelectorAll('.service-card, .project-card, .about-visual');
+        
+        elements.forEach((element, index) => {
+            const rect = element.getBoundingClientRect();
+            const elementTop = rect.top;
+            const elementHeight = rect.height;
+            const windowHeight = window.innerHeight;
+            
+            if (elementTop < windowHeight && elementTop > -elementHeight) {
+                const progress = (windowHeight - elementTop) / (windowHeight + elementHeight);
+                const translateY = progress * 30 * (index % 2 === 0 ? 1 : -1);
+                const rotateX = progress * 5;
+                
+                element.style.transform = `translateY(${translateY}px) rotateX(${rotateX}deg)`;
+            }
+        });
+    }
+
+    setupScrollObserver() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.animateElement(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe existing elements
+        document.querySelectorAll('.service-card, .project-card, .stat-item').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Add new dynamic elements
+        this.addDynamicTerminals();
+        this.addDataVisualization();
+    }
+
+    addDynamicTerminals() {
+        const aboutSection = document.querySelector('.about');
+        if (aboutSection) {
+            const terminal = document.createElement('div');
+            terminal.className = 'dynamic-terminal';
+            terminal.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <div style="width: 12px; height: 12px; background: #ff5f57; border-radius: 50%;"></div>
+                    <div style="width: 12px; height: 12px; background: #ffbd2e; border-radius: 50%;"></div>
+                    <div style="width: 12px; height: 12px; background: #28ca42; border-radius: 50%;"></div>
+                    <span style="color: #fff; font-size: 0.875rem; margin-left: 1rem;">vulkan_systems.py</span>
+                </div>
+                <div class="terminal-line">$ ./start_gpu_cluster.sh</div>
+                <div class="terminal-line">Initializing Vulkan API... ✓</div>
+                <div class="terminal-line">Loading compute shaders... ████████████ 100%</div>
+                <div class="terminal-line">Neural network acceleration: ENABLED</div>
+                <div class="terminal-line">Real-time ray tracing: ACTIVE</div>
+                <div class="terminal-line">Performance: 15.7 TFLOPS <span class="typing-cursor">█</span></div>
+            `;
+            
+            aboutSection.appendChild(terminal);
+            
+            // Animate terminal when visible
+            const terminalObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.animateTerminal(entry.target);
+                    }
+                });
+            });
+            
+            terminalObserver.observe(terminal);
+        }
+    }
+
+    animateTerminal(terminal) {
+        const lines = terminal.querySelectorAll('.terminal-line');
+        lines.forEach((line, index) => {
+            setTimeout(() => {
+                line.classList.add('active');
+            }, index * 500);
+        });
+    }
+
+    addDataVisualization() {
+        const servicesSection = document.querySelector('.services');
+        if (servicesSection) {
+            const dataViz = document.createElement('div');
+            dataViz.className = 'data-viz';
+            dataViz.innerHTML = `
+                <h3 style="color: #fff; margin-bottom: 1.5rem;">System Performance Metrics</h3>
+                <div>
+                    <span style="color: #a1a1aa;">GPU Utilization</span>
+                    <div class="viz-bar">
+                        <div class="viz-bar-fill" data-width="94"></div>
+                    </div>
+                </div>
+                <div>
+                    <span style="color: #a1a1aa;">Memory Bandwidth</span>
+                    <div class="viz-bar">
+                        <div class="viz-bar-fill" data-width="87"></div>
+                    </div>
+                </div>
+                <div>
+                    <span style="color: #a1a1aa;">AI Processing Speed</span>
+                    <div class="viz-bar">
+                        <div class="viz-bar-fill" data-width="96"></div>
+                    </div>
+                </div>
+                <div>
+                    <span style="color: #a1a1aa;">Quantum Coherence</span>
+                    <div class="viz-bar">
+                        <div class="viz-bar-fill" data-width="78"></div>
+                    </div>
+                </div>
+            `;
+            
+            servicesSection.appendChild(dataViz);
+            
+            // Animate data visualization when visible
+            const vizObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        this.animateDataViz(entry.target);
+                    }
+                });
+            });
+            
+            vizObserver.observe(dataViz);
+        }
+    }
+
+    animateDataViz(viz) {
+        const bars = viz.querySelectorAll('.viz-bar-fill');
+        bars.forEach((bar, index) => {
+            const width = bar.getAttribute('data-width');
+            setTimeout(() => {
+                bar.style.width = `${width}%`;
+            }, index * 300);
+        });
+    }
+
+    setupMouseEffects() {
+        const trail = document.createElement('div');
+        trail.className = 'mouse-trail';
+        document.body.appendChild(trail);
+        
+        let trailDots = [];
+        const maxTrailLength = 20;
+        
+        document.addEventListener('mousemove', (e) => {
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
+            
+            // Create trail dot
+            const dot = document.createElement('div');
+            dot.className = 'trail-dot';
+            dot.style.left = `${e.clientX}px`;
+            dot.style.top = `${e.clientY}px`;
+            
+            trail.appendChild(dot);
+            trailDots.push(dot);
+            
+            if (trailDots.length > maxTrailLength) {
+                const oldDot = trailDots.shift();
+                if (oldDot.parentNode) {
+                    oldDot.remove();
+                }
+            }
+            
+            setTimeout(() => {
+                if (dot.parentNode) {
+                    dot.remove();
+                }
+            }, 1000);
+        });
+    }
+
+    createDynamicBackground() {
+        // Add dynamic particles that respond to scroll
+        setInterval(() => {
+            if (Math.random() > 0.7 && window.innerWidth > 768) {
+                this.createScrollParticle();
+            }
+        }, 1000);
+    }
+
+    createScrollParticle() {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: rgba(99, 102, 241, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            left: ${Math.random() * 100}%;
+            top: 100%;
+            animation: particleRise 8s linear forwards;
+        `;
+        
+        const keyframes = `
+            @keyframes particleRise {
+                0% {
+                    transform: translateY(0px);
+                    opacity: 0;
+                }
+                10%, 90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100vh);
+                    opacity: 0;
+                }
+            }
+        `;
+        
+        if (!document.querySelector('#particle-keyframes')) {
+            const style = document.createElement('style');
+            style.id = 'particle-keyframes';
+            style.textContent = keyframes;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+            if (particle.parentNode) {
+                particle.remove();
+            }
+        }, 8000);
+    }
+
+    setupGlitchEffects() {
+        // Add glitch effect to main titles
+        const titles = document.querySelectorAll('h1, h2');
+        titles.forEach(title => {
+            if (title.textContent.includes('Future') || title.textContent.includes('Computing')) {
+                title.classList.add('glitch-text');
+                title.setAttribute('data-text', title.textContent);
+            }
+        });
+    }
+
+    animateElement(element) {
+        // Enhanced animation for different element types
+        if (element.classList.contains('service-card')) {
+            element.style.transform = 'translateY(0) rotateX(0) scale(1)';
+            element.style.opacity = '1';
+            
+            // Add holographic effect
+            setTimeout(() => {
+                element.style.transition = 'all 0.3s ease';
+            }, 600);
+        }
+        
+        if (element.classList.contains('project-card')) {
+            element.style.transform = 'translateY(0) rotateY(0) scale(1)';
+            element.style.opacity = '1';
+        }
+        
+        if (element.classList.contains('stat-item')) {
+            element.style.transform = 'translateY(0) scale(1)';
+            element.style.opacity = '1';
+            
+            // Animate the stat number
+            const statNumber = element.querySelector('.stat-number');
+            if (statNumber) {
+                this.animateCounter(statNumber);
+            }
+        }
+    }
+
+    animateCounter(element) {
+        const target = parseInt(element.getAttribute('data-count')) || parseInt(element.textContent);
+        const duration = 2000;
+        const increment = target / (duration / 16);
+        let current = 0;
+
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.floor(current);
+        }, 16);
+    }
+}
+
 // Initialize the website when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     const website = new VulkanLabsWebsite();
@@ -769,6 +1224,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize advanced features after a short delay
     setTimeout(() => {
         website.initAdvancedFeatures();
+        
+        // Initialize dynamic scroll animations
+        window.vulkanScrollAnimations = new VulkanScrollAnimations();
     }, 1500);
 });
 
