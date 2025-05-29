@@ -1308,8 +1308,9 @@ section:not(.hero) {
 }
 
 /* Services Section with Dynamic Background */
+/* Services Split Background Effect */
 .services {
-    background: var(--bg-primary);
+    background: var(--bg-secondary);
     padding-top: 100px !important;
     margin-top: 0;
     position: relative;
@@ -1322,26 +1323,190 @@ section:not(.hero) {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 50%;
     height: 100%;
     background: 
-        radial-gradient(circle at 80% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 20% 70%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 60% 90%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
-    animation: backgroundPulse 12s ease-in-out infinite;
+        radial-gradient(circle at 80% 30%, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0.05) 40%, transparent 70%),
+        radial-gradient(circle at 60% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
     z-index: -1;
+}
+
+.services::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 40%, rgba(236, 72, 153, 0.15) 0%, rgba(236, 72, 153, 0.05) 40%, transparent 70%),
+        radial-gradient(circle at 40% 70%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+    z-index: -1;
+}
+
+
+/* Dynamic Center Divider */
+.services-center-divider {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(99, 102, 241, 0.8) 20%,
+        rgba(236, 72, 153, 0.8) 50%,
+        rgba(99, 102, 241, 0.8) 80%,
+        transparent 100%
+    );
+    transform: translateX(-50%);
+    animation: dividerPulse 4s ease-in-out infinite;
+    z-index: 1;
+}
+
+.services-center-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.9) 0%, rgba(236, 72, 153, 0.9) 100%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 
+        0 0 20px rgba(99, 102, 241, 0.6),
+        0 0 40px rgba(236, 72, 153, 0.4);
+    animation: orbPulse 3s ease-in-out infinite;
+}
+
+.services-center-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(99, 102, 241, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: ringExpand 4s ease-in-out infinite;
+}
+
+@keyframes dividerPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@keyframes orbPulse {
+    0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 
+            0 0 20px rgba(99, 102, 241, 0.6),
+            0 0 40px rgba(236, 72, 153, 0.4);
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.2);
+        box-shadow: 
+            0 0 30px rgba(99, 102, 241, 0.8),
+            0 0 60px rgba(236, 72, 153, 0.6);
+    }
+}
+
+@keyframes ringExpand {
+    0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.4;
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.8;
+    }
+}
+
+/* Energy Particles */
+.services-energy-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.energy-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.8) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: floatUp 8s linear infinite;
+}
+
+.energy-particle:nth-child(odd) {
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.8) 0%, transparent 70%);
+    animation-duration: 10s;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(100vh) translateX(0px);
+        opacity: 0;
+    }
+    10%, 90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) translateX(20px);
+        opacity: 0;
+    }
 }
 
 .services .section-header {
     margin-bottom: 2rem !important;
 }
-
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 1.5rem;
-    margin-top: 0.5rem;
+/* Services Split Grid */
+.services-split-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridMoveLeft 25s linear infinite;
+    pointer-events: none;
+    z-index: -1;
 }
+
+.services-split-grid::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -50vw;
+    width: 50vw;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(236, 72, 153, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(236, 72, 153, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridMoveRight 25s linear infinite;
+}
+
+@keyframes gridMoveLeft {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(40px, 40px); }
+}
+
+@keyframes gridMoveRight {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-40px, -40px); }
+}
+
 
 .service-card {
     padding: 2rem;
