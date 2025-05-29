@@ -2,7 +2,8 @@
 
 <div align="center">
 
-![Vulkan Labs Logo](https://via.placeholder.com/200x80/6366f1/ffffff?text=Vulkan+Labs)
+![Vulkan Labs Logo](https://github.com/user-attachments/assets/8de2425e-9cbf-4b61-a6ff-18e549e9a56a)
+
 
 **Pioneering the future of high-performance computing, graphics, and AI solutions**
 
