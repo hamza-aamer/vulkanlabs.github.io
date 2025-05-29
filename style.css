@@ -1309,7 +1309,7 @@ section:not(.hero) {
 
 /* Services Section with Dynamic Background */
 .services {
-    background: var(--bg-secondary);
+    background: var(--bg-primary);
     padding-top: 100px !important;
     margin-top: 0;
     position: relative;
