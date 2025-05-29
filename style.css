@@ -633,6 +633,7 @@ body {
     margin-top: 3rem;
     opacity: 0;
     animation: fadeInUp 1s ease 0.8s forwards;
+    z-index: 2;
 }
 
 .hero-stats .stat-item {
@@ -844,6 +845,7 @@ body {
     transform: translate(-50%, -50%);
     width: 200px;
     height: 200px;
+    z-index: 0;
 }
 
 .holo-line {
@@ -852,6 +854,7 @@ body {
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.8), transparent);
     animation: holoScan 2s ease-in-out infinite;
+    z-index: 0;
 }
 
 .holo-line:nth-child(1) {
@@ -1346,19 +1349,19 @@ section:not(.hero) {
 }
 
 
-/* Dynamic Center Divider */
+/* Smart Center Divider that Fades Before Metrics */
 .services-center-divider {
     position: absolute;
     top: 0;
     left: 50%;
     width: 3px;
-    height: 100%;
+    height: calc(100% - 200px); /* Stop before metrics section */
     background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(99, 102, 241, 0.8) 20%,
+        rgba(99, 102, 241, 0.8) 15%,
         rgba(236, 72, 153, 0.8) 50%,
-        rgba(99, 102, 241, 0.8) 80%,
+        rgba(99, 102, 241, 0.8) 85%,
         transparent 100%
     );
     transform: translateX(-50%);
@@ -1369,7 +1372,7 @@ section:not(.hero) {
 .services-center-divider::before {
     content: '';
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     width: 20px;
     height: 20px;
@@ -1385,7 +1388,7 @@ section:not(.hero) {
 .services-center-divider::after {
     content: '';
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     width: 40px;
     height: 40px;
@@ -1867,14 +1870,28 @@ section:not(.hero) {
 }
 
 /* Data Visualization */
+/* Performance Metrics Enhanced */
 .data-viz {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius);
-    padding: 2rem;
-    margin: 2rem auto;
-    max-width: 1400px;
+    padding: 2.5rem;
+    margin: 3rem auto 0;
+    max-width: 1200px;
     backdrop-filter: blur(20px);
+    position: relative;
+    z-index: 5;
+}
+
+.data-viz h3 {
+    text-align: center;
+    margin-bottom: 2rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .viz-bar {
