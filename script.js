@@ -1250,10 +1250,17 @@ class VulkanScrollAnimations {
             if (title.textContent.includes('Fragile') || title.textContent.includes('Resilient') || title.textContent.includes('AI')) {
                 title.classList.add('glitch-text');
                 title.setAttribute('data-text', title.textContent);
+                
+                // Trigger glitch effect periodically
+                setInterval(() => {
+                    title.classList.add('active');
+                    setTimeout(() => {
+                        title.classList.remove('active');
+                    }, 2000);
+                }, 8000); // Every 8 seconds
             }
         });
     }
-
     animateElement(element) {
         // Enhanced animation for different element types
         if (element.classList.contains('service-card')) {
