@@ -80,6 +80,73 @@ class VulkanLabsWebsite {
 
         // Resize handler
         window.addEventListener('resize', () => this.handleResize());
+
+        // Form field handlers for better UX
+        this.setupFormFieldHandlers();
+    }
+
+    setupFormFieldHandlers() {
+        // Handle form field focus/blur for better label animation
+        const formFields = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
+        
+        formFields.forEach(field => {
+            // Set initial state
+            this.updateFieldLabel(field);
+            
+            // Listen for changes
+            field.addEventListener('input', () => this.updateFieldLabel(field));
+            field.addEventListener('change', () => this.updateFieldLabel(field));
+            field.addEventListener('focus', () => this.updateFieldLabel(field));
+            field.addEventListener('blur', () => this.updateFieldLabel(field));
+            
+            // Special handling for select elements
+            if (field.tagName === 'SELECT') {
+                field.addEventListener('change', () => {
+                    const label = field.nextElementSibling;
+                    if (label && label.tagName === 'LABEL') {
+                        if (field.value && field.value !== '') {
+                            field.classList.add('has-value');
+                            label.classList.add('active');
+                        } else {
+                            field.classList.remove('has-value');
+                            if (!field.matches(':focus')) {
+                                label.classList.remove('active');
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
+        // Set up the _replyto field to match the email input
+        const emailInput = document.querySelector('#email');
+        const replytoInput = document.querySelector('#replyto');
+        
+        if (emailInput && replytoInput) {
+            emailInput.addEventListener('input', () => {
+                replytoInput.value = emailInput.value;
+            });
+        }
+    }
+
+    updateFieldLabel(field) {
+        const label = field.nextElementSibling;
+        if (!label || !label.matches('label')) return;
+
+        const hasValue = field.value.trim() !== '';
+        const isFocused = document.activeElement === field;
+        
+        if (hasValue || isFocused) {
+            label.classList.add('active');
+            if (field.tagName === 'SELECT' && hasValue) {
+                field.classList.add('has-value');
+            }
+        } else {
+            label.classList.remove('active');
+            if (field.tagName === 'SELECT') {
+                field.classList.remove('has-value');
+            }
+        }
     }
 
     toggleNavigation() {
@@ -100,7 +167,11 @@ class VulkanLabsWebsite {
     scrollToSection(targetId) {
         const target = document.getElementById(targetId);
         if (target) {
-            const offsetTop = target.offsetTop - 80;
+            // Calculate offset based on screen size
+            const isMobile = window.innerWidth <= 768;
+            const navbarHeight = isMobile ? 60 : 70;
+            const offsetTop = target.offsetTop - navbarHeight;
+            
             window.scrollTo({
                 top: offsetTop,
                 behavior: 'smooth'
@@ -124,7 +195,9 @@ class VulkanLabsWebsite {
 
     updateActiveNavLink() {
         const sections = document.querySelectorAll('section');
-        const scrollPosition = window.scrollY + 100;
+        const isMobile = window.innerWidth <= 768;
+        const navbarHeight = isMobile ? 60 : 70;
+        const scrollPosition = window.scrollY + navbarHeight + 50;
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -140,23 +213,26 @@ class VulkanLabsWebsite {
     }
 
     updateParallax(scrollY) {
-        // Hero background parallax
-        const heroBackground = document.querySelector('.hero-background');
-        if (heroBackground) {
-            heroBackground.style.transform = `translateY(${scrollY * 0.5}px)`;
-        }
+        // Only apply parallax on larger screens for better performance
+        if (window.innerWidth > 768) {
+            // Hero background parallax
+            const heroBackground = document.querySelector('.hero-background');
+            if (heroBackground) {
+                heroBackground.style.transform = `translateY(${scrollY * 0.5}px)`;
+            }
 
-        // Floating elements parallax
-        const floatingElements = document.querySelectorAll('.float-element');
-        floatingElements.forEach((element, index) => {
-            const speed = 0.1 + (index * 0.05);
-            element.style.transform = `translateY(${scrollY * speed}px)`;
-        });
+            // Floating elements parallax
+            const floatingElements = document.querySelectorAll('.float-element');
+            floatingElements.forEach((element, index) => {
+                const speed = 0.1 + (index * 0.05);
+                element.style.transform = `translateY(${scrollY * speed}px)`;
+            });
+        }
     }
 
     createParticles() {
         const particlesContainer = document.getElementById('particles');
-        if (!particlesContainer) return;
+        if (!particlesContainer || window.innerWidth <= 768) return; // Skip on mobile for performance
 
         const particleCount = 50;
         
@@ -248,6 +324,9 @@ class VulkanLabsWebsite {
     }
 
     setupCursor() {
+        // Skip custom cursor on mobile devices
+        if (window.innerWidth <= 768 || 'ontouchstart' in window) return;
+
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
         
@@ -308,6 +387,9 @@ class VulkanLabsWebsite {
     }
 
     setupTiltEffect() {
+        // Skip tilt effect on mobile for better performance
+        if (window.innerWidth <= 768) return;
+
         const tiltElements = document.querySelectorAll('[data-tilt]');
         
         tiltElements.forEach(element => {
@@ -331,27 +413,86 @@ class VulkanLabsWebsite {
         });
     }
 
-    handleFormSubmit(e) {
+    async handleFormSubmit(e) {
         e.preventDefault();
         
         const form = e.target;
         const formData = new FormData(form);
         const submitBtn = form.querySelector('button[type="submit"]');
         
+        // Get form data
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const service = formData.get('service');
+        const message = formData.get('message');
+        
+        // Validate form
+        if (!name || !email || !service || !message) {
+            this.showNotification('Please fill in all fields', 'error');
+            return;
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            this.showNotification('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        // Set reply-to field
+        const replytoInput = document.getElementById('replyto');
+        if (replytoInput) {
+            replytoInput.value = email;
+        }
+        
         // Animate submit button
+        const originalContent = submitBtn.innerHTML;
         submitBtn.innerHTML = '<span>Sending...</span><i class="fas fa-spinner fa-spin"></i>';
         submitBtn.disabled = true;
         
-        // Simulate form submission
-        setTimeout(() => {
-            this.showNotification('Message sent successfully!', 'success');
-            form.reset();
-            submitBtn.innerHTML = '<span>Send Message</span><i class="fas fa-paper-plane"></i>';
+        try {
+            // Submit to your Formspree endpoint
+            const response = await fetch('https://formspree.io/f/xgvywwba', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                this.showNotification('Message sent successfully! We\'ll get back to you within 24 hours.', 'success');
+                form.reset();
+                
+                // Reset all form labels
+                document.querySelectorAll('.form-group label').forEach(label => {
+                    label.classList.remove('active');
+                });
+                document.querySelectorAll('.form-group select').forEach(select => {
+                    select.classList.remove('has-value');
+                });
+            } else {
+                const data = await response.json();
+                if (data.errors) {
+                    this.showNotification('Please correct the errors and try again', 'error');
+                } else {
+                    throw new Error('Failed to send message');
+                }
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            this.showNotification('Failed to send message. Please try again or email us directly at hello@vulkanlabs.com', 'error');
+        } finally {
+            submitBtn.innerHTML = originalContent;
             submitBtn.disabled = false;
-        }, 2000);
+        }
     }
 
     showNotification(message, type = 'info') {
+        // Remove any existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notif => notif.remove());
+        
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.style.cssText = `
@@ -361,11 +502,16 @@ class VulkanLabsWebsite {
             padding: 1rem 1.5rem;
             background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#6366f1'};
             color: white;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             z-index: 10000;
             transform: translateX(100%);
             transition: transform 0.3s ease;
+            max-width: 320px;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         `;
         notification.textContent = message;
         
@@ -379,8 +525,12 @@ class VulkanLabsWebsite {
         // Remove after delay
         setTimeout(() => {
             notification.style.transform = 'translateX(100%)';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }, type === 'error' ? 6000 : 4000);
     }
 
     filterProjects(e) {
@@ -422,6 +572,11 @@ class VulkanLabsWebsite {
             this.navMenu.classList.remove('active');
             this.navToggle.classList.remove('active');
         }
+        
+        // Re-initialize cursor on resize
+        if (window.innerWidth > 768 && !('ontouchstart' in window)) {
+            this.setupCursor();
+        }
     }
 
     // Advanced animation utilities
@@ -448,6 +603,9 @@ class VulkanLabsWebsite {
 
     // Matrix rain effect for hero background
     createMatrixRain() {
+        // Skip on mobile for performance
+        if (window.innerWidth <= 768) return;
+
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         
@@ -462,7 +620,10 @@ class VulkanLabsWebsite {
             z-index: -1;
         `;
         
-        document.querySelector('.hero-background').appendChild(canvas);
+        const heroBackground = document.querySelector('.hero-background');
+        if (heroBackground) {
+            heroBackground.appendChild(canvas);
+        }
         
         const resizeCanvas = () => {
             canvas.width = window.innerWidth;
@@ -618,7 +779,9 @@ window.VulkanLabs = {
         const targetElement = typeof target === 'string' ? document.querySelector(target) : target;
         if (!targetElement) return;
         
-        const targetPosition = targetElement.offsetTop - 80;
+        const isMobile = window.innerWidth <= 768;
+        const navbarHeight = isMobile ? 60 : 70;
+        const targetPosition = targetElement.offsetTop - navbarHeight;
         const startPosition = window.pageYOffset;
         const distance = targetPosition - startPosition;
         let startTime = null;

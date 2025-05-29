@@ -111,6 +111,7 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 1000;
     transition: all var(--transition-normal);
+    height: 70px;
 }
 
 .navbar.scrolled {
@@ -125,6 +126,7 @@ body {
     padding: 1rem 2rem;
     max-width: 1400px;
     margin: 0 auto;
+    height: 100%;
 }
 
 .nav-logo {
@@ -206,6 +208,7 @@ body {
     justify-content: center;
     position: relative;
     overflow: hidden;
+    padding-top: 70px; /* Account for fixed navbar */
 }
 
 .hero-background {
@@ -520,6 +523,10 @@ body {
 section {
     padding: var(--section-padding);
     position: relative;
+}
+
+section:not(.hero) {
+    padding-top: calc(var(--section-padding) + 70px); /* Account for fixed navbar */
 }
 
 .section-header {
@@ -939,8 +946,10 @@ section {
     gap: 1.5rem;
 }
 
+/* Form group styling improvements */
 .form-group {
     position: relative;
+    margin-bottom: 1.5rem;
 }
 
 .form-group input,
@@ -954,8 +963,16 @@ section {
     color: var(--text-primary);
     font-size: 1rem;
     transition: all var(--transition-normal);
+    font-family: var(--font-primary);
 }
 
+/* Placeholder styling */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: transparent;
+}
+
+/* Select dropdown specific styling */
 .form-group select {
     cursor: pointer;
     appearance: none;
@@ -972,6 +989,7 @@ section {
     padding: 0.5rem;
 }
 
+/* Focus states */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -980,6 +998,7 @@ section {
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
+/* Label styling */
 .form-group label {
     position: absolute;
     top: 1rem;
@@ -988,14 +1007,18 @@ section {
     font-size: 1rem;
     transition: all var(--transition-normal);
     pointer-events: none;
+    z-index: 2;
+    background: transparent;
+    padding: 0;
 }
 
+/* Active label state - when field is focused or has content */
 .form-group input:focus + label,
-.form-group input:valid + label,
+.form-group input:not(:placeholder-shown) + label,
 .form-group select:focus + label,
-.form-group select:valid + label,
 .form-group textarea:focus + label,
-.form-group textarea:valid + label {
+.form-group textarea:not(:placeholder-shown) + label,
+.form-group label.active {
     top: -0.5rem;
     left: 0.75rem;
     font-size: 0.75rem;
@@ -1004,9 +1027,32 @@ section {
     padding: 0 0.5rem;
 }
 
+/* Special handling for select dropdown */
+.form-group select:not([value=""]) + label,
+.form-group select[value]:not([value=""]) + label {
+    top: -0.5rem;
+    left: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    background: var(--bg-secondary);
+    padding: 0 0.5rem;
+}
+
+/* Ensure select with valid selection keeps label active */
+.form-group select.has-value + label {
+    top: -0.5rem;
+    left: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    background: var(--bg-secondary);
+    padding: 0 0.5rem;
+}
+
+/* Textarea specific sizing */
 .form-group textarea {
     min-height: 120px;
     resize: vertical;
+    font-family: var(--font-primary);
 }
 
 /* Footer */
@@ -1127,12 +1173,29 @@ section {
 }
 
 @media (max-width: 768px) {
+    :root {
+        --section-padding: 80px 0;
+    }
+
+    /* Navigation fixes */
+    .navbar {
+        height: 60px;
+    }
+
+    .hero {
+        padding-top: 60px;
+    }
+
+    section:not(.hero) {
+        padding-top: calc(80px + 60px);
+    }
+
     .nav-menu {
         position: fixed;
-        top: 70px;
+        top: 60px;
         left: 0;
         width: 100%;
-        height: calc(100vh - 70px);
+        height: calc(100vh - 60px);
         background: rgba(10, 10, 10, 0.95);
         backdrop-filter: blur(20px);
         flex-direction: column;
@@ -1190,11 +1253,83 @@ section {
         gap: 1rem;
         text-align: center;
     }
+
+    /* Hide scroll indicator on mobile to prevent overlap */
+    .scroll-indicator {
+        display: none;
+    }
+
+    /* Adjust floating elements positioning on mobile */
+    .floating-elements {
+        display: none;
+    }
+
+    /* Reduce tech showcase size on mobile */
+    .tech-showcase {
+        width: 250px;
+        height: 250px;
+    }
+
+    .tech-orb {
+        width: 80px;
+        height: 80px;
+    }
+
+    .ring-1 {
+        width: 120px;
+        height: 120px;
+        top: -60px;
+        left: -60px;
+    }
+
+    .ring-2 {
+        width: 160px;
+        height: 160px;
+        top: -80px;
+        left: -80px;
+    }
+
+    .ring-3 {
+        width: 200px;
+        height: 200px;
+        top: -100px;
+        left: -100px;
+    }
+
+    /* Mobile specific form adjustments */
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.875rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .form-group label {
+        top: 0.875rem;
+        left: 0.875rem;
+    }
+    
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label,
+    .form-group label.active,
+    .form-group select:not([value=""]) + label,
+    .form-group select[value]:not([value=""]) + label,
+    .form-group select.has-value + label {
+        top: -0.5rem;
+        left: 0.75rem;
+    }
 }
 
 @media (max-width: 480px) {
     :root {
-        --section-padding: 80px 0;
+        --section-padding: 60px 0;
         --container-padding: 0 1rem;
     }
     
@@ -1207,9 +1342,13 @@ section {
     }
     
     .services-grid,
-    .projects-grid,
-    .team-grid {
+    .projects-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* Ensure proper spacing on very small screens */
+    section:not(.hero) {
+        padding-top: calc(60px + 60px);
     }
 }
 

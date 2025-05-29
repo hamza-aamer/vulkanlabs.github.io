@@ -370,20 +370,20 @@
                     </div>
                 </div>
                 
-                <form class="contact-form" id="contact-form">
+                <form class="contact-form" id="contact-form" action="https://formspree.io/f/xgvywwba" method="POST">
                     <div class="form-group">
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" placeholder=" " required>
                         <label for="name">Your Name</label>
                     </div>
                     
                     <div class="form-group">
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="email" placeholder=" " required>
                         <label for="email">Email Address</label>
                     </div>
                     
                     <div class="form-group">
                         <select id="service" name="service" required>
-                            <option value="">Select a Service</option>
+                            <option value="" disabled selected hidden></option>
                             <option value="ai">AI & Machine Learning</option>
                             <option value="gpu">GPU Computing</option>
                             <option value="graphics">3D Graphics</option>
@@ -395,9 +395,14 @@
                     </div>
                     
                     <div class="form-group">
-                        <textarea id="message" name="message" required></textarea>
+                        <textarea id="message" name="message" placeholder=" " required></textarea>
                         <label for="message">Project Details</label>
                     </div>
+                    
+                    <!-- Hidden fields for better email organization -->
+                    <input type="hidden" name="_replyto" id="replyto">
+                    <input type="hidden" name="_subject" value="New Contact Form Submission - Vulkan Labs">
+                    <input type="hidden" name="_cc" value="hello@vulkanlabs.com">
                     
                     <button type="submit" class="btn btn-primary">
                         <span>Send Message</span>
