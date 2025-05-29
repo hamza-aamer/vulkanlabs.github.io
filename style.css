@@ -942,7 +942,8 @@ section:not(.hero) {
     max-width: 600px;
     margin: 0 auto;
 }
-/* About Section */
+
+/* About Section Effects */
 .about {
     background: var(--bg-secondary);
     padding-top: 80px !important;
@@ -950,7 +951,23 @@ section:not(.hero) {
     margin-top: 0;
     position: relative;
     z-index: 1;
+    overflow: hidden;
 }
+
+.about::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 30% 40%, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+    animation: backgroundPulse 10s ease-in-out infinite;
+    z-index: -1;
+}
+
 
 .about-grid {
     display: grid;
@@ -1290,13 +1307,29 @@ section:not(.hero) {
     backdrop-filter: blur(20px);
 }
 
-/* Services Section */
+/* Services Section with Dynamic Background */
 .services {
+    background: var(--bg-secondary);
     padding-top: 100px !important;
     margin-top: 0;
     position: relative;
     z-index: 2;
-    background: var(--bg-primary);
+    overflow: hidden;
+}
+
+.services::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 80% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 20% 70%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 60% 90%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
+    animation: backgroundPulse 12s ease-in-out infinite;
+    z-index: -1;
 }
 
 .services .section-header {
@@ -1319,6 +1352,191 @@ section:not(.hero) {
     position: relative;
     overflow: hidden;
 }
+
+/* Section Background Effects */
+.services-bg-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.services-blob-1 {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0.03) 70%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(30px);
+    top: 20%;
+    right: -10%;
+    animation: morphFloat 15s ease-in-out infinite;
+}
+
+.services-blob-2 {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, rgba(236, 72, 153, 0.03) 70%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(30px);
+    bottom: 30%;
+    left: -5%;
+    animation: morphFloat 20s ease-in-out infinite reverse;
+}
+
+.services-blob-3 {
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 50%, transparent 100%);
+    border-radius: 50%;
+    filter: blur(45px);
+    top: 50%;
+    left: 30%;
+    animation: morphFloat 25s ease-in-out infinite;
+    mix-blend-mode: screen;
+}
+
+@keyframes morphFloat {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.8;
+    }
+    25% {
+        transform: translate(-20px, -30px) scale(1.1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(30px, -20px) scale(0.9);
+        opacity: 0.6;
+    }
+    75% {
+        transform: translate(-10px, 20px) scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+
+/* Services Code Particles */
+.services-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Services Network Lines Container */
+.services-network-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.services-code-particle {
+    position: absolute;
+    color: rgba(99, 102, 241, 0.4);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    pointer-events: none;
+    animation: servicesCodeFloat 20s linear infinite;
+}
+
+@keyframes servicesCodeFloat {
+    0% {
+        transform: translateY(100%) translateX(0px);
+        opacity: 0;
+    }
+    10%, 90% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-50px) translateX(30px);
+        opacity: 0;
+    }
+}
+
+/* Services Grid Overlay */
+.services-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: servicesGridMove 30s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes servicesGridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(60px, 60px); }
+}
+
+
+/* Services Network Lines */
+.services-network-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(99, 102, 241, 0.3) 20%,
+        rgba(236, 72, 153, 0.3) 50%,
+        rgba(99, 102, 241, 0.3) 80%,
+        transparent 100%);
+    animation: servicesNetworkPulse 8s ease-in-out infinite;
+}
+
+.services-network-line:nth-child(1) {
+    top: 25%;
+    left: 0;
+    width: 100%;
+    animation-delay: 0s;
+}
+
+.services-network-line:nth-child(2) {
+    top: 60%;
+    left: 0;
+    width: 100%;
+    animation-delay: 2s;
+}
+
+.services-network-line:nth-child(3) {
+    top: 80%;
+    left: 0;
+    width: 100%;
+    animation-delay: 4s;
+}
+
+@keyframes servicesNetworkPulse {
+    0%, 100% { 
+        opacity: 0.1; 
+        transform: scaleX(0.3);
+    }
+    50% { 
+        opacity: 0.6; 
+        transform: scaleX(1);
+    }
+}
+
+
 
 /* Holographic Card Effect */
 .holographic-card {
@@ -1986,9 +2204,13 @@ section:not(.hero) {
 }
 
 @media (max-width: 768px) {
-    :root {
-        --section-padding: 60px 0;
+    .services-blob-1, 
+    .services-blob-2, 
+    .services-blob-3 {
+        width: 250px;
+        height: 250px;
     }
+
 
     .navbar {
         height: 60px;
@@ -2002,6 +2224,21 @@ section:not(.hero) {
         padding-top: 60px !important;
         padding-bottom: 60px !important;
     }
+
+
+    .services-code-particle {
+        font-size: 10px;
+    }
+    
+    .services-network-line {
+        display: none;
+    }
+    
+    .services-grid-overlay {
+        background-size: 30px 30px;
+    }
+
+
 
     .about {
         padding-bottom: 80px !important;
@@ -2227,6 +2464,15 @@ section:not(.hero) {
     .hero-title {
         font-size: 2rem;
     }
+
+    .services-bg-effects {
+        display: none;
+    }
+    
+    .services-particles {
+        display: none;
+    }
+
     
     .enhanced-stats {
         grid-template-columns: 1fr;
@@ -2242,3 +2488,14 @@ section:not(.hero) {
     }
 }
 
+/* Performance Optimization for Services */
+@media (prefers-reduced-motion: reduce) {
+    .services-blob-1,
+    .services-blob-2,
+    .services-blob-3,
+    .services-code-particle,
+    .services-network-line,
+    .services-grid-overlay {
+        animation: none;
+    }
+}
