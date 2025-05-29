@@ -837,11 +837,12 @@ class VulkanScrollAnimations {
 
     createFloatingCode() {
         const codeSnippets = [
-            'def neural_network():', 'import torch', 'class GPU_Accelerator:',
-            'cudaMalloc(&ptr, size)', 'glCreateShader(GL_VERTEX)', 
-            'vkCreateDevice()', 'tensorflow.keras', 'numpy.array()',
-            'cv2.imread()', 'sklearn.model', 'async def compute():', 
-            'from transformers import', 'pytorch.nn.Conv2d'
+            'agent.execute()', 'import vulkan_ai', 'class AgentPipeline:',
+            'async def process()', 'torch.compile()', 'agent.memory.scoped',
+            'from agents import *', 'gpu.accelerate()', 'ml.inference()',
+            'pipeline.resilient', 'fallback.enabled', 'def neural_net():',
+            'import tensorflow', 'cuda.malloc()', 'agent.adapt()',
+            'production.ready'
         ];
         
         const container = document.createElement('div');
@@ -979,11 +980,11 @@ class VulkanScrollAnimations {
                     <div style="width: 12px; height: 12px; background: #28ca42; border-radius: 50%;"></div>
                     <span style="color: #fff; font-size: 0.875rem; margin-left: 1rem;">vulkan_systems.py</span>
                 </div>
-                <div class="terminal-line">$ ./start_gpu_cluster.sh</div>
+                <div class="terminal-line">$ ./start_ai_cluster.sh</div>
                 <div class="terminal-line">Initializing Vulkan API... ✓</div>
-                <div class="terminal-line">Loading compute shaders... ████████████ 100%</div>
-                <div class="terminal-line">Neural network acceleration: ENABLED</div>
-                <div class="terminal-line">Real-time ray tracing: ACTIVE</div>
+                <div class="terminal-line">Loading agentic pipelines... ████████████ 100%</div>
+                <div class="terminal-line">Neural acceleration: ENABLED</div>
+                <div class="terminal-line">Resilient agents: ACTIVE</div>
                 <div class="terminal-line">Performance: 15.7 TFLOPS <span class="typing-cursor">█</span></div>
             `;
             
@@ -998,11 +999,12 @@ class VulkanScrollAnimations {
                     <span style="color: #fff; font-size: 0.875rem; margin-left: 1rem;">system_monitor.py</span>
                 </div>
                 <div class="terminal-line">$ nvidia-smi</div>
-                <div class="terminal-line">GPU: RTX 4090 Ti | Temp: 67°C</div>
-                <div class="terminal-line">Memory: 24576MB | Usage: 89%</div>
-                <div class="terminal-line">Processes: 15 | Power: 425W</div>
-                <div class="terminal-line">CUDA Version: 12.3 | Driver: 545.29</div>
-                <div class="terminal-line">Performance: <span class="highlight">Peak</span> <span class="typing-cursor">█</span></div>
+                <div class="terminal-line">GPU: RTX 4090 Ti x8 | Temp: 67°C</div>
+                <div class="terminal-line">Memory: 192GB VRAM | Usage: 89%</div>
+                <div class="terminal-line">Agents: 24 active | Bandwidth: 24TB/s</div>
+                <div class="terminal-line">CUDA Cores: 83,968 | Driver: 545.29</div>
+                <div class="terminal-line">AI Workload: <span class="highlight">Optimal</span> | Fallbacks: Ready</div>
+                <div class="terminal-line">Pipeline Status: <span class="highlight">Resilient</span> <span class="typing-cursor">█</span></div>
             `;
             
             aboutSection.appendChild(terminal);
@@ -1061,29 +1063,35 @@ class VulkanScrollAnimations {
             const dataViz = document.createElement('div');
             dataViz.className = 'data-viz';
             dataViz.innerHTML = `
-                <h3 style="color: #fff; margin-bottom: 1.5rem;">System Performance Metrics</h3>
-                <div>
+                <h3 style="color: #fff; margin-bottom: 1.5rem;">AI System Performance Metrics</h3>
+                <div style="margin-bottom: 1rem;">
+                    <span style="color: #a1a1aa;">Agent Reliability</span>
+                    <div class="viz-bar">
+                        <div class="viz-bar-fill" data-width="99"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
                     <span style="color: #a1a1aa;">GPU Utilization</span>
                     <div class="viz-bar">
                         <div class="viz-bar-fill" data-width="94"></div>
                     </div>
                 </div>
-                <div>
+                <div style="margin-bottom: 1rem;">
+                    <span style="color: #a1a1aa;">Neural Processing Speed</span>
+                    <div class="viz-bar">
+                        <div class="viz-bar-fill" data-width="96"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
                     <span style="color: #a1a1aa;">Memory Bandwidth</span>
                     <div class="viz-bar">
                         <div class="viz-bar-fill" data-width="87"></div>
                     </div>
                 </div>
                 <div>
-                    <span style="color: #a1a1aa;">AI Processing Speed</span>
+                    <span style="color: #a1a1aa;">System Uptime</span>
                     <div class="viz-bar">
-                        <div class="viz-bar-fill" data-width="96"></div>
-                    </div>
-                </div>
-                <div>
-                    <span style="color: #a1a1aa;">Quantum Coherence</span>
-                    <div class="viz-bar">
-                        <div class="viz-bar-fill" data-width="78"></div>
+                        <div class="viz-bar-fill" data-width="100"></div>
                     </div>
                 </div>
             `;
@@ -1105,11 +1113,41 @@ class VulkanScrollAnimations {
 
     animateDataViz(viz) {
         const bars = viz.querySelectorAll('.viz-bar-fill');
+        const title = viz.querySelector('h3');
+        
+        // Animate title first
+        if (title) {
+            title.style.opacity = '0';
+            title.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+                title.style.transition = 'all 0.6s ease';
+            }, 200);
+        }
+        
+        // Animate bars with stagger effect
         bars.forEach((bar, index) => {
             const width = bar.getAttribute('data-width');
+            const label = bar.parentElement.previousElementSibling;
+            
             setTimeout(() => {
-                bar.style.width = `${width}%`;
-            }, index * 300);
+                // Animate label first
+                if (label) {
+                    label.style.color = '#fff';
+                    label.style.transition = 'color 0.3s ease';
+                }
+                
+                // Then animate bar
+                setTimeout(() => {
+                    bar.style.width = `${width}%`;
+                    
+                    // Add completion glow effect
+                    setTimeout(() => {
+                        bar.style.boxShadow = `0 0 20px rgba(99, 102, 241, 0.6)`;
+                    }, 1500);
+                }, 100);
+            }, index * 400);
         });
     }
 
@@ -1209,7 +1247,7 @@ class VulkanScrollAnimations {
         // Add glitch effect to main titles
         const titles = document.querySelectorAll('h1, h2');
         titles.forEach(title => {
-            if (title.textContent.includes('Future') || title.textContent.includes('Computing')) {
+            if (title.textContent.includes('Fragile') || title.textContent.includes('Resilient') || title.textContent.includes('AI')) {
                 title.classList.add('glitch-text');
                 title.setAttribute('data-text', title.textContent);
             }
