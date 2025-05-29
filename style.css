@@ -1311,8 +1311,9 @@ section:not(.hero) {
 /* Services Split Background Effect */
 .services {
     background: var(--bg-secondary);
-    padding-top: 100px !important;
-    margin-top: 0;
+    padding-top: 60px !important; /* Reduced from 100px */
+    padding-bottom: 80px !important;
+    margin-top: -20px; /* Pull it up closer to previous section */
     position: relative;
     z-index: 2;
     overflow: hidden;
@@ -1648,6 +1649,8 @@ section:not(.hero) {
     z-index: -1;
 }
 
+
+
 @keyframes servicesGridMove {
     0% { transform: translate(0, 0); }
     100% { transform: translate(60px, 60px); }
@@ -1669,25 +1672,25 @@ section:not(.hero) {
     animation: servicesNetworkPulse 8s ease-in-out infinite;
 }
 
-.services-network-line:nth-child(1) {
-    top: 25%;
-    left: 0;
-    width: 100%;
-    animation-delay: 0s;
+.services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem 4rem;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 3;
 }
 
-.services-network-line:nth-child(2) {
-    top: 60%;
-    left: 0;
+.service-card:nth-child(odd) {
+    justify-self: end;
     width: 100%;
-    animation-delay: 2s;
+    max-width: 400px;
 }
 
-.services-network-line:nth-child(3) {
-    top: 80%;
-    left: 0;
+.service-card:nth-child(even) {
+    justify-self: start;
     width: 100%;
-    animation-delay: 4s;
+    max-width: 400px;
 }
 
 @keyframes servicesNetworkPulse {
