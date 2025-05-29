@@ -969,6 +969,7 @@ class VulkanScrollAnimations {
     addDynamicTerminals() {
         const aboutSection = document.querySelector('.about');
         if (aboutSection) {
+            // Create main terminal
             const terminal = document.createElement('div');
             terminal.className = 'dynamic-terminal';
             terminal.innerHTML = `
@@ -986,9 +987,28 @@ class VulkanScrollAnimations {
                 <div class="terminal-line">Performance: 15.7 TFLOPS <span class="typing-cursor">█</span></div>
             `;
             
-            aboutSection.appendChild(terminal);
+            // Create system monitor terminal
+            const systemMonitor = document.createElement('div');
+            systemMonitor.className = 'system-monitor-terminal';
+            systemMonitor.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <div style="width: 12px; height: 12px; background: #ff5f57; border-radius: 50%;"></div>
+                    <div style="width: 12px; height: 12px; background: #ffbd2e; border-radius: 50%;"></div>
+                    <div style="width: 12px; height: 12px; background: #28ca42; border-radius: 50%;"></div>
+                    <span style="color: #fff; font-size: 0.875rem; margin-left: 1rem;">system_monitor.py</span>
+                </div>
+                <div class="terminal-line">$ nvidia-smi</div>
+                <div class="terminal-line">GPU: RTX 4090 Ti | Temp: 67°C</div>
+                <div class="terminal-line">Memory: 24576MB | Usage: 89%</div>
+                <div class="terminal-line">Processes: 15 | Power: 425W</div>
+                <div class="terminal-line">CUDA Version: 12.3 | Driver: 545.29</div>
+                <div class="terminal-line">Performance: <span class="highlight">Peak</span> <span class="typing-cursor">█</span></div>
+            `;
             
-            // Animate terminal when visible
+            aboutSection.appendChild(terminal);
+            aboutSection.appendChild(systemMonitor);
+            
+            // Animate terminals when visible
             const terminalObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -998,6 +1018,7 @@ class VulkanScrollAnimations {
             });
             
             terminalObserver.observe(terminal);
+            terminalObserver.observe(systemMonitor);
         }
     }
 
@@ -1006,8 +1027,32 @@ class VulkanScrollAnimations {
         lines.forEach((line, index) => {
             setTimeout(() => {
                 line.classList.add('active');
-            }, index * 500);
+                
+                // Add typing effect for the last line with cursor
+                if (index === lines.length - 1 && line.querySelector('.typing-cursor')) {
+                    const cursor = line.querySelector('.typing-cursor');
+                    cursor.style.animation = 'blink 1s infinite';
+                }
+                
+                // Add special effects for highlight text
+                const highlight = line.querySelector('.highlight');
+                if (highlight) {
+                    setTimeout(() => {
+                        highlight.style.textShadow = '0 0 15px rgba(255, 107, 107, 0.8)';
+                    }, 200);
+                }
+            }, index * 600); // Slightly slower for better readability
         });
+        
+        // Add terminal completion sound effect (visual feedback)
+        setTimeout(() => {
+            const lastLine = lines[lines.length - 1];
+            if (lastLine) {
+                lastLine.style.borderLeft = '3px solid #00ff41';
+                lastLine.style.paddingLeft = '0.5rem';
+                lastLine.style.transition = 'all 0.3s ease';
+            }
+        }, (lines.length * 600) + 500);
     }
 
     addDataVisualization() {
