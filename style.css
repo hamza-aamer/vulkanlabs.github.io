@@ -2113,17 +2113,32 @@ section:not(.hero) {
     position: relative;
     margin-bottom: 1.5rem;
 }
-/* Always float the label if the select is not empty */
-.form-group select:invalid + label,
-.form-group select:not([value]):not(:focus) + label {
-  top: -0.5rem;
-  left: 0.75rem;
-  font-size: 0.75rem;
-  color: var(--primary-color);
-  background: var(--bg-secondary);
-  padding: 0 0.5rem;
-}
+/* ─────────  SELECT FLOATING-LABEL  ───────── */
 
+/* 2-A – label sits **inside** the field (placeholder style)
+        when the select has no value and is NOT focused            */
+        .form-group select:not([value]):not(:focus) + label {
+            top: 1rem;
+            left: 1rem;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            background: transparent;
+            padding: 0;
+        }
+        
+        /* 2-B – label **floats** above  
+                • when the user focuses the select  
+                • or after a real value is chosen                         */
+        .form-group select:focus + label,
+        .form-group select[value]:not([value=""]) + label {
+            top: -0.5rem;
+            left: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--primary-color);
+            background: var(--bg-secondary);
+            padding: 0 0.5rem;
+        }
+        
 
 .form-group input,
 .form-group select,
