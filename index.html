@@ -2,15 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Vulkan Labs - AI & High-Performance Computing Solutions</title>
     <meta name="description" content="Vulkan Labs - Transforming fragile AI stacks into resilient systems. Agentic AI, LLMops, and high-performance computing solutions.">
+    
+    <!-- Mobile optimization meta tags -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vulkan Labs">
+    <meta name="theme-color" content="#6366f1">
     
     <!-- Preload critical resources -->
     <link rel="preload" href="style.css" as="style">
     <link rel="preload" href="script.js" as="script">
     
-    <!-- Fonts -->
+    <!-- Fonts with display swap for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,17 +32,81 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⚡%3C/text%3E%3C/svg%3E">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="Vulkan Labs - AI & High-Performance Computing Solutions">
+    <meta property="og:description" content="Transforming fragile AI stacks into resilient systems. Agentic AI, LLMops, and high-performance computing solutions.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vulkanlabs.com">
+    <meta property="og:image" content="https://vulkanlabs.com/og-image.jpg">
+    
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vulkan Labs - AI & High-Performance Computing Solutions">
+    <meta name="twitter:description" content="Transforming fragile AI stacks into resilient systems. Agentic AI, LLMops, and high-performance computing solutions.">
+    <meta name="twitter:image" content="https://vulkanlabs.com/twitter-image.jpg">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Vulkan Labs",
+        "url": "https://vulkanlabs.com",
+        "logo": "https://vulkanlabs.com/logo.png",
+        "description": "Transforming fragile AI stacks into resilient systems. Agentic AI, LLMops, and high-performance computing solutions.",
+        "sameAs": [
+            "https://www.linkedin.com/company/vulkanlabs",
+            "https://github.com/hamza-aamer"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "",
+            "contactType": "customer service",
+            "email": "hello@vulkanlabs.com"
+        }
+    }
+    </script>
+    
+    <!-- Performance optimization for mobile -->
+    <script>
+        // Set up viewport height fix for mobile
+        function setVH() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        setVH();
+        window.addEventListener('resize', setVH);
+        window.addEventListener('orientationchange', () => setTimeout(setVH, 500));
+        
+        // Detect if device is mobile for CSS optimizations
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            document.documentElement.classList.add('mobile-device');
+        }
+        
+        // Disable animations if reduced motion is preferred
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.classList.add('reduced-motion');
+        }
+    </script>
 </head>
 <body>
-    <!-- Cursor follower -->
-    <div class="cursor-dot" data-cursor-dot></div>
-    <div class="cursor-outline" data-cursor-outline></div>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main" class="sr-only">Skip to main content</a>
+    
+    <!-- Cursor follower (desktop only) -->
+    <div class="cursor-dot" data-cursor-dot aria-hidden="true"></div>
+    <div class="cursor-outline" data-cursor-outline aria-hidden="true"></div>
     
     <!-- Navigation -->
-    <nav class="navbar" id="navbar">
+    <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <div class="nav-logo">
-                <span class="logo-icon">⚡</span>
+                <span class="logo-icon" aria-hidden="true">⚡</span>
                 <span class="logo-text">Vulkan Labs</span>
             </div>
             <div class="nav-menu" id="nav-menu">
@@ -43,613 +116,630 @@
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
-            <div class="nav-toggle" id="nav-toggle">
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero enhanced-hero">
-        <div class="hero-background">
-            <div class="geometric-bg"></div>
-            <div class="particles-container" id="particles"></div>
-            <div class="hero-grid-overlay"></div>
-        </div>
-        
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1 class="hero-title" data-text="Turning Fragile AI into Resilient Systems">
-                    <span class="title-line-1">Turning Fragile AI into</span><br>
-                    <span class="title-line-2 gradient-text glitch-text"
-                        data-text="Resilient Systems">
-                        Resilient Systems
-                    </span>
-
-                </h1>
-                <p class="hero-subtitle">
-                    We partner with ambitious builders to transform prototype AI into production-ready agentic workflows that adapt, survive, and scale.
-                </p>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary" data-scroll-to="about">
-                        <span>Explore Solutions</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                    <button class="btn btn-secondary" data-scroll-to="contact">
-                        <span>Let's Build</span>
-                        <i class="fas fa-rocket"></i>
-                    </button>
-                </div>
-                
-                <!-- Real-time Hero Stats -->
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="99.9">0</div>
-                        <div class="stat-label">% Agent Reliability</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="15">0</div>
-                        <div class="stat-label">ms Response Time</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="10000">0</div>
-                        <div class="stat-label">GPU Cores Available</div>
-                    </div>
-                </div>
+    <!-- Main content -->
+    <main id="main">
+        <!-- Hero Section -->
+        <section id="home" class="hero enhanced-hero">
+            <div class="hero-background" aria-hidden="true">
+                <div class="geometric-bg"></div>
+                <div class="particles-container" id="particles"></div>
+                <div class="hero-grid-overlay"></div>
             </div>
             
-            <div class="hero-visual enhanced-visual">
-                <div class="tech-showcase">
-                    <div class="tech-orb"></div>
-                    <div class="tech-rings">
-                        <div class="ring ring-1"></div>
-                        <div class="ring ring-2"></div>
-                        <div class="ring ring-3"></div>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title" data-text="Turning Fragile AI into Resilient Systems">
+                        <span class="title-line-1">Turning Fragile AI into</span><br>
+                        <span class="title-line-2 gradient-text glitch-text"
+                            data-text="Resilient Systems">
+                            Resilient Systems
+                        </span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        We partner with ambitious builders to transform prototype AI into production-ready agentic workflows that adapt, survive, and scale.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" data-scroll-to="about">
+                            <span>Explore Solutions</span>
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-secondary" data-scroll-to="contact">
+                            <span>Let's Build</span>
+                            <i class="fas fa-rocket" aria-hidden="true"></i>
+                        </button>
                     </div>
-                    <div class="floating-elements">
-                        <div class="float-element" style="--delay: 0s">AI</div>
-                        <div class="float-element" style="--delay: 0.5s">GPU</div>
-                        <div class="float-element" style="--delay: 1s">LLM</div>
-                        <div class="float-element" style="--delay: 1.5s">AGENTS</div>
-                    </div>
-                    <!-- Holographic Display -->
-                    <div class="holographic-display">
-                        <div class="holo-line"></div>
-                        <div class="holo-line"></div>
-                        <div class="holo-line"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="scroll-indicator">
-            <div class="scroll-line"></div>
-            <span>Scroll to explore</span>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about enhanced-about">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">About Vulkan Labs</span>
-                <h2 class="section-title">Innovation Meets Performance</h2>
-                <p class="section-subtitle">We don't follow trends, we set them. Transforming complex AI challenges into elegant, highly performant solutions.</p>
-            </div>
-            
-            <div class="about-grid">
-                <div class="about-content">
-                    <!-- Enhanced Stats with Progress Bars -->
-                    <div class="stats-grid enhanced-stats">
-                        <div class="stat-item stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-robot"></i>
-                                <div class="icon-glow"></div>
-                            </div>
-                            <div class="stat-number" data-count="100">0</div>
-                            <div class="stat-label">% Client Satisfaction</div>
-                            <div class="stat-progress">
-                                <div class="progress-line" data-progress="100"></div>
-                            </div>
-                        </div>
-                        <div class="stat-item stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-microchip"></i>
-                                <div class="icon-glow"></div>
-                            </div>
-                            <div class="stat-number" data-count="24">0</div>
-                            <div class="stat-label">TB/s GPU Bandwidth</div>
-                            <div class="stat-progress">
-                                <div class="progress-line" data-progress="95"></div>
-                            </div>
-                        </div>
-                        <div class="stat-item stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-brain"></i>
-                                <div class="icon-glow"></div>
-                            </div>
-                            <div class="stat-number" data-count="2025">0</div>
-                            <div class="stat-label">Founded</div>
-                            <div class="stat-progress">
-                                <div class="progress-line" data-progress="90"></div>
-                            </div>
-                        </div>
-                        <div class="stat-item stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-infinity"></i>
-                                <div class="icon-glow"></div>
-                            </div>
+                    
+                    <!-- Real-time Hero Stats -->
+                    <div class="hero-stats">
+                        <div class="stat-item">
                             <div class="stat-number" data-count="99.9">0</div>
-                            <div class="stat-label">% System Uptime</div>
-                            <div class="stat-progress">
-                                <div class="progress-line" data-progress="99"></div>
-                            </div>
+                            <div class="stat-label">% Agent Reliability</div>
                         </div>
-                    </div>
-                    
-                    <div class="about-text">
-                        <p>At Vulkan Labs, we specialize in turning fragile AI prototypes into resilient, production-ready systems. Our focus is on agentic AI workflows with scoped memory, fallback logic, and automation that adapts under pressure.</p>
-                        <p>We combine cutting-edge AI/ML acceleration with high-performance GPU computing to deliver end-to-end pipelines that are traceable, testable, and scalable. This isn't about cool demos—it's about operational AI that delivers real-world outcomes.</p>
+                        <div class="stat-item">
+                            <div class="stat-number" data-count="15">0</div>
+                            <div class="stat-label">ms Response Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-count="10000">0</div>
+                            <div class="stat-label">GPU Cores Available</div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="about-visual">
-                    <div class="code-window">
-                        <div class="code-header">
-                            <div class="code-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                            <span class="code-title">agentic_pipeline.py</span>
+                <div class="hero-visual enhanced-visual">
+                    <div class="tech-showcase">
+                        <div class="tech-orb"></div>
+                        <div class="tech-rings">
+                            <div class="ring ring-1"></div>
+                            <div class="ring ring-2"></div>
+                            <div class="ring ring-3"></div>
                         </div>
-                        <div class="code-content" id="code-content">
-                            <div class="code-line"><span class="keyword">import</span> <span class="string">vulkan_ai</span></div>
-                            <div class="code-line"><span class="keyword">from</span> <span class="string">agents</span> <span class="keyword">import</span> <span class="class">ResilientAgent</span></div>
-                            <div class="code-line"></div>
-                            <div class="code-line"><span class="keyword">class</span> <span class="class">ProductionPipeline</span>:</div>
-                            <div class="code-line">  <span class="keyword">def</span> <span class="function">__init__</span>(self):</div>
-                            <div class="code-line">    self.agent = <span class="class">ResilientAgent</span>(</div>
-                            <div class="code-line">      memory_scope=<span class="string">"session"</span>,</div>
-                            <div class="code-line">      fallback_enabled=<span class="keyword">True</span></div>
-                            <div class="code-line">    )</div>
-                            <div class="code-line">  </div>
-                            <div class="code-line">  <span class="keyword">async def</span> <span class="function">execute</span>(self):</div>
-                            <div class="code-line">    <span class="comment"># AI that just works</span></div>
-                            <div class="code-line">    <span class="keyword">return</span> <span class="keyword">await</span> self.agent.run()</div>
+                        <div class="floating-elements">
+                            <div class="float-element" style="--delay: 0s">AI</div>
+                            <div class="float-element" style="--delay: 0.5s">GPU</div>
+                            <div class="float-element" style="--delay: 1s">LLM</div>
+                            <div class="float-element" style="--delay: 1.5s">AGENTS</div>
                         </div>
-                    </div>
-                    
-                    <!-- Secondary Terminal with System Stats -->
-                    <div class="code-window secondary-terminal">
-                        <div class="code-header">
-                            <div class="code-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                            <span class="code-title">gpu_cluster.sh</span>
-                        </div>
-                        <div class="terminal-content">
-                            <div class="terminal-line">$ ./start_ai_cluster.sh</div>
-                            <div class="terminal-line">Initializing GPU cluster...</div>
-                            <div class="terminal-line">Agents: 24 | GPUs: RTX 4090 x8</div>
-                            <div class="terminal-line">VRAM: 192GB | Bandwidth: 24TB/s</div>
-                            <div class="terminal-line">Status: <span class="highlight">Operational</span></div>
+                        <!-- Holographic Display -->
+                        <div class="holographic-display">
+                            <div class="holo-line"></div>
+                            <div class="holo-line"></div>
+                            <div class="holo-line"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+            
+            <div class="scroll-indicator" aria-hidden="true">
+                <div class="scroll-line"></div>
+                <span>Scroll to explore</span>
+            </div>
+        </section>
 
-    
-    <!-- Services Section with Split Background Effects -->
-    <section id="services" class="services">
-        <!-- Split Background Effects -->
-        <div class="services-split-grid"></div>
-        <div class="services-center-divider"></div>
-        <div class="services-energy-particles">
-            <!-- Energy particles for visual effects -->
-        </div>
-        
+        <!-- About Section -->
+        <section id="about" class="about enhanced-about">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">About Vulkan Labs</span>
+                    <h2 class="section-title">Innovation Meets Performance</h2>
+                    <p class="section-subtitle">We don't follow trends, we set them. Transforming complex AI challenges into elegant, highly performant solutions.</p>
+                </div>
+                
+                <div class="about-grid">
+                    <div class="about-content">
+                        <!-- Enhanced Stats with Progress Bars -->
+                        <div class="stats-grid enhanced-stats">
+                            <div class="stat-item stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-robot" aria-hidden="true"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="stat-number" data-count="100">0</div>
+                                <div class="stat-label">% Client Satisfaction</div>
+                                <div class="stat-progress">
+                                    <div class="progress-line" data-progress="100"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-microchip" aria-hidden="true"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="stat-number" data-count="24">0</div>
+                                <div class="stat-label">TB/s GPU Bandwidth</div>
+                                <div class="stat-progress">
+                                    <div class="progress-line" data-progress="95"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-brain" aria-hidden="true"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="stat-number" data-count="2025">0</div>
+                                <div class="stat-label">Founded</div>
+                                <div class="stat-progress">
+                                    <div class="progress-line" data-progress="90"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-infinity" aria-hidden="true"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="stat-number" data-count="99.9">0</div>
+                                <div class="stat-label">% System Uptime</div>
+                                <div class="stat-progress">
+                                    <div class="progress-line" data-progress="99"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="about-text">
+                            <p>At Vulkan Labs, we specialize in turning fragile AI prototypes into resilient, production-ready systems. Our focus is on agentic AI workflows with scoped memory, fallback logic, and automation that adapts under pressure.</p>
+                            <p>We combine cutting-edge AI/ML acceleration with high-performance GPU computing to deliver end-to-end pipelines that are traceable, testable, and scalable. This isn't about cool demos—it's about operational AI that delivers real-world outcomes.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-visual">
+                        <div class="code-window">
+                            <div class="code-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="code-title">agentic_pipeline.py</span>
+                            </div>
+                            <div class="code-content" id="code-content">
+                                <div class="code-line"><span class="keyword">import</span> <span class="string">vulkan_ai</span></div>
+                                <div class="code-line"><span class="keyword">from</span> <span class="string">agents</span> <span class="keyword">import</span> <span class="class">ResilientAgent</span></div>
+                                <div class="code-line"></div>
+                                <div class="code-line"><span class="keyword">class</span> <span class="class">ProductionPipeline</span>:</div>
+                                <div class="code-line">  <span class="keyword">def</span> <span class="function">__init__</span>(self):</div>
+                                <div class="code-line">    self.agent = <span class="class">ResilientAgent</span>(</div>
+                                <div class="code-line">      memory_scope=<span class="string">"session"</span>,</div>
+                                <div class="code-line">      fallback_enabled=<span class="keyword">True</span></div>
+                                <div class="code-line">    )</div>
+                                <div class="code-line">  </div>
+                                <div class="code-line">  <span class="keyword">async def</span> <span class="function">execute</span>(self):</div>
+                                <div class="code-line">    <span class="comment"># AI that just works</span></div>
+                                <div class="code-line">    <span class="keyword">return</span> <span class="keyword">await</span> self.agent.run()</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Secondary Terminal with System Stats -->
+                        <div class="code-window secondary-terminal">
+                            <div class="code-header">
+                                <div class="code-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span class="code-title">gpu_cluster.sh</span>
+                            </div>
+                            <div class="terminal-content">
+                                <div class="terminal-line">$ ./start_ai_cluster.sh</div>
+                                <div class="terminal-line">Initializing GPU cluster...</div>
+                                <div class="terminal-line">Agents: 24 | GPUs: RTX 4090 x8</div>
+                                <div class="terminal-line">VRAM: 192GB | Bandwidth: 24TB/s</div>
+                                <div class="terminal-line">Status: <span class="highlight">Operational</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section with Split Background Effects -->
+        <section id="services" class="services">
+            <!-- Split Background Effects -->
+            <div class="services-split-grid" aria-hidden="true"></div>
+            <div class="services-center-divider" aria-hidden="true"></div>
+            <div class="services-energy-particles" aria-hidden="true">
+                <!-- Energy particles for visual effects -->
+            </div>
+            
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Our Solutions</span>
+                    <h2 class="section-title">From Prototype to Production</h2>
+                    <p class="section-subtitle">Comprehensive AI and high-performance computing solutions that scale with your ambitions.</p>
+                </div>
+                
+                <div class="services-grid">
+                    <div class="service-card holographic-card">
+                        <div class="service-icon">
+                            <i class="fas fa-robot" aria-hidden="true"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <h3 class="service-title">Agentic AI Workflows</h3>
+                        <p class="service-description">Transform fragile prototypes into resilient agent systems with scoped memory, fallback logic, and adaptive behavior.</p>
+                        <div class="service-features">
+                            <span>Memory Management</span>
+                            <span>Fallback Logic</span>
+                            <span>Multi-Agent Systems</span>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="metric">
+                                <span class="metric-value">99.9%</span>
+                                <span class="metric-label">Reliability</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">10ms</span>
+                                <span class="metric-label">Response</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card holographic-card">
+                        <div class="service-icon">
+                            <i class="fas fa-microchip" aria-hidden="true"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <h3 class="service-title">GPU-Accelerated AI</h3>
+                        <p class="service-description">Harness the power of parallel processing with optimized GPU acceleration for ML training and inference.</p>
+                        <div class="service-features">
+                            <span>CUDA Development</span>
+                            <span>Vulkan Compute</span>
+                            <span>Tensor Optimization</span>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="metric">
+                                <span class="metric-value">100x</span>
+                                <span class="metric-label">Speedup</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">24TB/s</span>
+                                <span class="metric-label">Bandwidth</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card holographic-card">
+                        <div class="service-icon">
+                            <i class="fas fa-project-diagram" aria-hidden="true"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <h3 class="service-title">LLMops & Pipelines</h3>
+                        <p class="service-description">End-to-end pipelines that are traceable, testable, and scalable. From development to production deployment.</p>
+                        <div class="service-features">
+                            <span>Pipeline Orchestration</span>
+                            <span>Model Versioning</span>
+                            <span>A/B Testing</span>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="metric">
+                                <span class="metric-value">Zero</span>
+                                <span class="metric-label">Downtime</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">Auto</span>
+                                <span class="metric-label">Scaling</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card holographic-card">
+                        <div class="service-icon">
+                            <i class="fas fa-cogs" aria-hidden="true"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <h3 class="service-title">Intelligent Automation</h3>
+                        <p class="service-description">Automation that adapts and survives production environments, handling edge cases and unexpected scenarios.</p>
+                        <div class="service-features">
+                            <span>Self-Healing Systems</span>
+                            <span>Anomaly Detection</span>
+                            <span>Adaptive Logic</span>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="metric">
+                                <span class="metric-value">24/7</span>
+                                <span class="metric-label">Monitoring</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">Auto</span>
+                                <span class="metric-label">Recovery</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card holographic-card">
+                        <div class="service-icon">
+                            <i class="fas fa-cube" aria-hidden="true"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <h3 class="service-title">Real-Time Graphics</h3>
+                        <p class="service-description">Photorealistic rendering, ray tracing, and immersive visual experiences powered by cutting-edge GPU technology.</p>
+                        <div class="service-features">
+                            <span>Ray Tracing</span>
+                            <span>Real-time Rendering</span>
+                            <span>VR/AR Support</span>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="metric">
+                                <span class="metric-value">8K</span>
+                                <span class="metric-label">Resolution</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">120fps</span>
+                                <span class="metric-label">Performance</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card holographic-card">
+                        <div class="service-icon">
+                            <i class="fas fa-network-wired" aria-hidden="true"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <h3 class="service-title">IoT & Edge Computing</h3>
+                        <p class="service-description">Distributed AI inference at the edge, connecting intelligent devices with cloud-scale processing power.</p>
+                        <div class="service-features">
+                            <span>Edge Deployment</span>
+                            <span>IoT Integration</span>
+                            <span>Real-time Processing</span>
+                        </div>
+                        <div class="service-metrics">
+                            <div class="metric">
+                                <span class="metric-value">5ms</span>
+                                <span class="metric-label">Latency</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">Global</span>
+                                <span class="metric-label">Edge Network</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="projects">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Case Studies</span>
+                    <h2 class="section-title">AI That Just Works</h2>
+                    <p class="section-subtitle">Real-world implementations of resilient AI systems that deliver operational outcomes.</p>
+                </div>
+                
+                <div class="projects-filter">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="ai">Agentic AI</button>
+                    <button class="filter-btn" data-filter="automation">Automation</button>
+                    <button class="filter-btn" data-filter="compute">GPU Computing</button>
+                </div>
+                
+                <div class="projects-grid">
+                    <article class="project-card" data-category="ai">
+                        <div class="project-image">
+                            <div class="project-overlay">
+                                <div class="project-links">
+                                    <a href="#" class="project-link" aria-label="View project details">
+                                        <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="#" class="project-link" aria-label="More information">
+                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Multi-Agent Trading System</h3>
+                            <p class="project-description">Resilient agentic workflow for high-frequency trading with scoped memory and real-time fallback mechanisms.</p>
+                            <div class="project-tech">
+                                <span>Multi-Agent</span>
+                                <span>Real-time</span>
+                                <span>GPU Accelerated</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="project-card" data-category="automation">
+                        <div class="project-image">
+                            <div class="project-overlay">
+                                <div class="project-links">
+                                    <a href="#" class="project-link" aria-label="View project details">
+                                        <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="#" class="project-link" aria-label="More information">
+                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Self-Healing DevOps Pipeline</h3>
+                            <p class="project-description">Intelligent automation system that adapts to failures and maintains 99.9% uptime through predictive monitoring.</p>
+                            <div class="project-tech">
+                                <span>Self-Healing</span>
+                                <span>Predictive</span>
+                                <span>Auto-Scale</span>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="project-card" data-category="compute">
+                        <div class="project-image">
+                            <div class="project-overlay">
+                                <div class="project-links">
+                                    <a href="#" class="project-link" aria-label="View project details">
+                                        <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="#" class="project-link" aria-label="More information">
+                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Distributed Training Cluster</h3>
+                            <p class="project-description">High-performance GPU cluster for large language model training with optimized memory management and fault tolerance.</p>
+                            <div class="project-tech">
+                                <span>Distributed</span>
+                                <span>GPU Cluster</span>
+                                <span>LLM Training</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Ready to Build?</span>
+                    <h2 class="section-title">Transform Your AI Vision</h2>
+                    <p class="section-subtitle">Building something that needs to just work? Let's turn your fragile prototype into a resilient system.</p>
+                </div>
+                
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope" aria-hidden="true"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Get In Touch</h4>
+                                <p>hello@vulkanlabs.com<br>We respond within 24 hours</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fab fa-linkedin" aria-hidden="true"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Connect on LinkedIn</h4>
+                                <p>Follow our latest insights<br>on AI and performance</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-rocket" aria-hidden="true"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Start Building</h4>
+                                <p>From concept to production<br>in record time</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form class="contact-form" id="contact-form" action="https://formspree.io/f/xgvywwba" method="POST" novalidate>
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder=" " required autocomplete="name">
+                            <label for="name">Your Name</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder=" " required autocomplete="email">
+                            <label for="email">Email Address</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <select id="service" name="service" required>
+                                <option value="" disabled selected hidden></option>
+                                <option value="agentic-ai">Agentic AI Workflows</option>
+                                <option value="gpu-acceleration">GPU-Accelerated AI</option>
+                                <option value="llmops">LLMops & Pipelines</option>
+                                <option value="automation">Intelligent Automation</option>
+                                <option value="graphics">Real-Time Graphics</option>
+                                <option value="iot">IoT & Edge Computing</option>
+                            </select>
+                            <label for="service">Service Interest</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea id="message" name="message" placeholder=" " required></textarea>
+                            <label for="message">Tell us about your AI challenge</label>
+                        </div>
+                        
+                        <!-- Hidden fields for better email organization -->
+                        <input type="hidden" name="_replyto" id="replyto">
+                        <input type="hidden" name="_subject" value="New Contact Form Submission - Vulkan Labs">
+                        <input type="hidden" name="_cc" value="hello@vulkanlabs.com">
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span>Send Message</span>
+                            <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
         <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Our Solutions</span>
-                <h2 class="section-title">From Prototype to Production</h2>
-                <p class="section-subtitle">Comprehensive AI and high-performance computing solutions that scale with your ambitions.</p>
-            </div>
-            
-            <div class="services-grid">
-                <div class="service-card holographic-card">
-                    <div class="service-icon">
-                        <i class="fas fa-robot"></i>
-                        <div class="icon-glow"></div>
+            <div class="footer-content">
+                <!-- Brand -->
+                <div class="footer-logo">
+                    <div class="nav-logo">
+                        <span class="logo-icon" aria-hidden="true">⚡</span>
+                        <span class="logo-text">Vulkan Labs</span>
                     </div>
-                    <h3 class="service-title">Agentic AI Workflows</h3>
-                    <p class="service-description">Transform fragile prototypes into resilient agent systems with scoped memory, fallback logic, and adaptive behavior.</p>
-                    <div class="service-features">
-                        <span>Memory Management</span>
-                        <span>Fallback Logic</span>
-                        <span>Multi-Agent Systems</span>
+                    <p style="margin-top:1rem;color:var(--text-secondary);max-width:300px;">
+                        Transforming fragile AI stacks into resilient systems. Innovation meets performance.
+                    </p>
+                </div>
+
+                <!-- Links -->
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Solutions</h4>
+                        <a href="#services">Agentic&nbsp;AI</a>
+                        <a href="#services">GPU&nbsp;Computing</a>
+                        <a href="#services">LLMops</a>
+                        <a href="#services">Automation</a>
                     </div>
-                    <div class="service-metrics">
-                        <div class="metric">
-                            <span class="metric-value">99.9%</span>
-                            <span class="metric-label">Reliability</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">10ms</span>
-                            <span class="metric-label">Response</span>
-                        </div>
+
+                    <div class="footer-section">
+                        <h4>Company</h4>
+                        <a href="#about">About</a>
+                        <a href="#projects">Case&nbsp;Studies</a>
+                        <a href="#contact">Contact</a>
+                        <a href="mailto:hello@vulkanlabs.com?subject=Careers%20at%20Vulkan%20Labs">Careers</a>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Focus Areas</h4>
+                        <a href="#hashtag-ai">#AI</a>
+                        <a href="#hashtag-agentic">#AgenticAI</a>
+                        <a href="#hashtag-llmops">#LLMops</a>
+                        <a href="#hashtag-automation">#IntelligentAutomation</a>
                     </div>
                 </div>
-                
-                <div class="service-card holographic-card">
-                    <div class="service-icon">
-                        <i class="fas fa-microchip"></i>
-                        <div class="icon-glow"></div>
-                    </div>
-                    <h3 class="service-title">GPU-Accelerated AI</h3>
-                    <p class="service-description">Harness the power of parallel processing with optimized GPU acceleration for ML training and inference.</p>
-                    <div class="service-features">
-                        <span>CUDA Development</span>
-                        <span>Vulkan Compute</span>
-                        <span>Tensor Optimization</span>
-                    </div>
-                    <div class="service-metrics">
-                        <div class="metric">
-                            <span class="metric-value">100x</span>
-                            <span class="metric-label">Speedup</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">24TB/s</span>
-                            <span class="metric-label">Bandwidth</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card holographic-card">
-                    <div class="service-icon">
-                        <i class="fas fa-project-diagram"></i>
-                        <div class="icon-glow"></div>
-                    </div>
-                    <h3 class="service-title">LLMops & Pipelines</h3>
-                    <p class="service-description">End-to-end pipelines that are traceable, testable, and scalable. From development to production deployment.</p>
-                    <div class="service-features">
-                        <span>Pipeline Orchestration</span>
-                        <span>Model Versioning</span>
-                        <span>A/B Testing</span>
-                    </div>
-                    <div class="service-metrics">
-                        <div class="metric">
-                            <span class="metric-value">Zero</span>
-                            <span class="metric-label">Downtime</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">Auto</span>
-                            <span class="metric-label">Scaling</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card holographic-card">
-                    <div class="service-icon">
-                        <i class="fas fa-cogs"></i>
-                        <div class="icon-glow"></div>
-                    </div>
-                    <h3 class="service-title">Intelligent Automation</h3>
-                    <p class="service-description">Automation that adapts and survives production environments, handling edge cases and unexpected scenarios.</p>
-                    <div class="service-features">
-                        <span>Self-Healing Systems</span>
-                        <span>Anomaly Detection</span>
-                        <span>Adaptive Logic</span>
-                    </div>
-                    <div class="service-metrics">
-                        <div class="metric">
-                            <span class="metric-value">24/7</span>
-                            <span class="metric-label">Monitoring</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">Auto</span>
-                            <span class="metric-label">Recovery</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card holographic-card">
-                    <div class="service-icon">
-                        <i class="fas fa-cube"></i>
-                        <div class="icon-glow"></div>
-                    </div>
-                    <h3 class="service-title">Real-Time Graphics</h3>
-                    <p class="service-description">Photorealistic rendering, ray tracing, and immersive visual experiences powered by cutting-edge GPU technology.</p>
-                    <div class="service-features">
-                        <span>Ray Tracing</span>
-                        <span>Real-time Rendering</span>
-                        <span>VR/AR Support</span>
-                    </div>
-                    <div class="service-metrics">
-                        <div class="metric">
-                            <span class="metric-value">8K</span>
-                            <span class="metric-label">Resolution</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">120fps</span>
-                            <span class="metric-label">Performance</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card holographic-card">
-                    <div class="service-icon">
-                        <i class="fas fa-network-wired"></i>
-                        <div class="icon-glow"></div>
-                    </div>
-                    <h3 class="service-title">IoT & Edge Computing</h3>
-                    <p class="service-description">Distributed AI inference at the edge, connecting intelligent devices with cloud-scale processing power.</p>
-                    <div class="service-features">
-                        <span>Edge Deployment</span>
-                        <span>IoT Integration</span>
-                        <span>Real-time Processing</span>
-                    </div>
-                    <div class="service-metrics">
-                        <div class="metric">
-                            <span class="metric-value">5ms</span>
-                            <span class="metric-label">Latency</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-value">Global</span>
-                            <span class="metric-label">Edge Network</span>
-                        </div>
+
+                <!-- Social -->
+                <div class="footer-social">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="mailto:hello@vulkanlabs.com" aria-label="Email us">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/company/vulkanlabs"
+                           target="_blank" rel="noopener noreferrer" aria-label="Follow us on LinkedIn">
+                            <i class="fab fa-linkedin" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://github.com/hamza-aamer"
+                           target="_blank" rel="noopener noreferrer" aria-label="View our GitHub">
+                            <i class="fab fa-github" aria-hidden="true"></i>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            
-        </div>
-    </section>
-
-
-
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Case Studies</span>
-                <h2 class="section-title">AI That Just Works</h2>
-                <p class="section-subtitle">Real-world implementations of resilient AI systems that deliver operational outcomes.</p>
-            </div>
-            
-            <div class="projects-filter">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="ai">Agentic AI</button>
-                <button class="filter-btn" data-filter="automation">Automation</button>
-                <button class="filter-btn" data-filter="compute">GPU Computing</button>
-            </div>
-            
-            <div class="projects-grid">
-                <div class="project-card" data-category="ai">
-                    <div class="project-image">
-                        <div class="project-overlay">
-                            <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="#" class="project-link"><i class="fas fa-info-circle"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Multi-Agent Trading System</h3>
-                        <p class="project-description">Resilient agentic workflow for high-frequency trading with scoped memory and real-time fallback mechanisms.</p>
-                        <div class="project-tech">
-                            <span>Multi-Agent</span>
-                            <span>Real-time</span>
-                            <span>GPU Accelerated</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card" data-category="automation">
-                    <div class="project-image">
-                        <div class="project-overlay">
-                            <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="#" class="project-link"><i class="fas fa-info-circle"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Self-Healing DevOps Pipeline</h3>
-                        <p class="project-description">Intelligent automation system that adapts to failures and maintains 99.9% uptime through predictive monitoring.</p>
-                        <div class="project-tech">
-                            <span>Self-Healing</span>
-                            <span>Predictive</span>
-                            <span>Auto-Scale</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-card" data-category="compute">
-                    <div class="project-image">
-                        <div class="project-overlay">
-                            <div class="project-links">
-                                <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="#" class="project-link"><i class="fas fa-info-circle"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Distributed Training Cluster</h3>
-                        <p class="project-description">High-performance GPU cluster for large language model training with optimized memory management and fault tolerance.</p>
-                        <div class="project-tech">
-                            <span>Distributed</span>
-                            <span>GPU Cluster</span>
-                            <span>LLM Training</span>
-                        </div>
-                    </div>
+            <!-- Bottom bar -->
+            <div class="footer-bottom">
+                <p>&copy; 2025 Vulkan Labs. All rights reserved. | Innovation meets performance.</p>
+                <div class="footer-legal">
+                    <a href="#privacy">Privacy&nbsp;Policy</a>
+                    <a href="#terms">Terms&nbsp;of&nbsp;Service</a>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Ready to Build?</span>
-                <h2 class="section-title">Transform Your AI Vision</h2>
-                <p class="section-subtitle">Building something that needs to just work? Let's turn your fragile prototype into a resilient system.</p>
-            </div>
-            
-            <div class="contact-grid">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h4>Get In Touch</h4>
-                            <p>hello@vulkanlabs.com<br>We respond within 24 hours</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fab fa-linkedin"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h4>Connect on LinkedIn</h4>
-                            <p>Follow our latest insights<br>on AI and performance</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h4>Start Building</h4>
-                            <p>From concept to production<br>in record time</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <form class="contact-form" id="contact-form" action="https://formspree.io/f/xgvywwba" method="POST">
-                    <div class="form-group">
-                        <input type="text" id="name" name="name" placeholder=" " required>
-                        <label for="name">Your Name</label>
-                    </div>
-                    
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder=" " required>
-                        <label for="email">Email Address</label>
-                    </div>
-                    
-                    <div class="form-group">
-                        <select id="service" name="service" required>
-                            <option value="" disabled selected hidden></option>
-                            <option value="agentic-ai">Agentic AI Workflows</option>
-                            <option value="gpu-acceleration">GPU-Accelerated AI</option>
-                            <option value="llmops">LLMops & Pipelines</option>
-                            <option value="automation">Intelligent Automation</option>
-                            <option value="graphics">Real-Time Graphics</option>
-                            <option value="iot">IoT & Edge Computing</option>
-                        </select>
-                        <label for="service">Service Interest</label>
-                    </div>
-                    
-                    <div class="form-group">
-                        <textarea id="message" name="message" placeholder=" " required></textarea>
-                        <label for="message">Tell us about your AI challenge</label>
-                    </div>
-                    
-                    <!-- Hidden fields for better email organization -->
-                    <input type="hidden" name="_replyto" id="replyto">
-                    <input type="hidden" name="_subject" value="New Contact Form Submission - Vulkan Labs">
-                    <input type="hidden" name="_cc" value="hello@vulkanlabs.com">
-                    
-                    <button type="submit" class="btn btn-primary">
-                        <span>Send Message</span>
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-<!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <!-- Brand -->
-            <div class="footer-logo">
-                <span class="logo-icon">⚡</span>
-                <span class="logo-text">Vulkan Labs</span>
-                <p style="margin-top:1rem;color:var(--text-secondary);max-width:300px;">
-                    Transforming fragile AI stacks into resilient systems. Innovation meets performance.
-                </p>
-            </div>
-
-            <!-- Links -->
-            <div class="footer-links">
-                <div class="footer-section">
-                    <h4>Solutions</h4>
-                    <a href="#services">Agentic&nbsp;AI</a>
-                    <a href="#services">GPU&nbsp;Computing</a>
-                    <a href="#services">LLMops</a>
-                    <a href="#services">Automation</a>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Company</h4>
-                    <a href="#about">About</a>
-                    <a href="#projects">Case&nbsp;Studies</a>
-                    <a href="#contact">Contact</a>
-                    <a href="mailto:hello@vulkanlabs.com?subject=Careers%20at%20Vulkan%20Labs">Careers</a>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Focus Areas</h4>
-                    <a href="#hashtag-ai">#AI</a>
-                    <a href="#hashtag-agentic">#AgenticAI</a>
-                    <a href="#hashtag-llmops">#LLMops</a>
-                    <a href="#hashtag-automation">#IntelligentAutomation</a>
-                </div>
-            </div>
-
-            <!-- Social -->
-            <div class="footer-social">
-                <h4>Connect</h4>
-                <div class="social-links">
-                    <a href="mailto:hello@vulkanlabs.com" aria-label="Email">
-                        <i class="fas fa-envelope"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/company/vulkanlabs"
-                       target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="https://github.com/hamza-aamer"
-                       target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom bar -->
-        <div class="footer-bottom">
-            <p>&copy; 2025 Vulkan Labs. All rights reserved. | Innovation meets performance.</p>
-            <div class="footer-legal">
-                <a href="#privacy">Privacy&nbsp;Policy</a>
-                <a href="#terms">Terms&nbsp;of&nbsp;Service</a>
-            </div>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <!-- Scripts -->
     <script src="script.js"></script>
+    
+    <!-- Analytics placeholder - replace with your actual analytics -->
+    <script>
+        // Google Analytics or other analytics code would go here
+        // Example: gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
 </body>
 </html>

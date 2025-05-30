@@ -1,12 +1,23 @@
-// Complete JavaScript for Vulkan Labs Website with Dynamic Animations
+// Complete JavaScript for Vulkan Labs Website with Mobile Optimization
 
 class VulkanLabsWebsite {
     constructor() {
+        this.isMobile = window.innerWidth <= 768;
+        this.isTablet = window.innerWidth <= 1024 && window.innerWidth > 768;
+        this.isTouch = 'ontouchstart' in window;
+        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
         this.init();
         this.setupEventListeners();
-        this.createParticles();
+        this.setupMobileOptimizations();
+        
+        // Only initialize heavy features on desktop
+        if (!this.isMobile && !this.reducedMotion) {
+            this.createParticles();
+            this.setupCursor();
+        }
+        
         this.setupScrollAnimations();
-        this.setupCursor();
         this.setupTypingEffect();
     }
 
@@ -16,6 +27,9 @@ class VulkanLabsWebsite {
         this.navToggle = document.getElementById('nav-toggle');
         this.navMenu = document.getElementById('nav-menu');
         this.navLinks = document.querySelectorAll('.nav-link');
+        
+        // Set up mobile viewport height fix
+        this.setupViewportFix();
         
         // Loading screen
         this.createLoadingScreen();
@@ -28,7 +42,86 @@ class VulkanLabsWebsite {
                     loading.classList.add('hidden');
                     setTimeout(() => loading.remove(), 500);
                 }
-            }, 1000);
+            }, this.isMobile ? 500 : 1000);
+        });
+    }
+
+    setupViewportFix() {
+        // Fix for mobile viewport height issues
+        const setVH = () => {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+        
+        setVH();
+        window.addEventListener('resize', this.debounce(setVH, 100));
+        window.addEventListener('orientationchange', () => {
+            setTimeout(setVH, 500);
+        });
+    }
+
+    setupMobileOptimizations() {
+        if (!this.isMobile) return;
+
+        // Disable hover effects on touch devices
+        document.documentElement.classList.add('touch-device');
+        
+        // Optimize touch scrolling
+        document.body.style.webkitOverflowScrolling = 'touch';
+        
+        // Handle virtual keyboard on mobile
+        this.setupVirtualKeyboardHandling();
+        
+        // Optimize touch events
+        this.setupTouchOptimizations();
+        
+        // Reduce animations on mobile
+        if (this.reducedMotion || this.isMobile) {
+            document.documentElement.classList.add('reduced-motion');
+        }
+    }
+
+    setupVirtualKeyboardHandling() {
+        const inputs = document.querySelectorAll('input, textarea, select');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                document.body.classList.add('keyboard-open');
+                // Scroll input into view on mobile
+                if (this.isMobile) {
+                    setTimeout(() => {
+                        input.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }, 300);
+                }
+            });
+            
+            input.addEventListener('blur', () => {
+                document.body.classList.remove('keyboard-open');
+            });
+        });
+    }
+
+    setupTouchOptimizations() {
+        // Add touch feedback for interactive elements
+        const touchElements = document.querySelectorAll('.btn, .nav-link, .filter-btn, .project-link, .social-links a');
+        
+        touchElements.forEach(element => {
+            element.addEventListener('touchstart', () => {
+                element.classList.add('touch-active');
+            });
+            
+            element.addEventListener('touchend', () => {
+                setTimeout(() => {
+                    element.classList.remove('touch-active');
+                }, 150);
+            });
+            
+            element.addEventListener('touchcancel', () => {
+                element.classList.remove('touch-active');
+            });
         });
     }
 
@@ -45,16 +138,24 @@ class VulkanLabsWebsite {
         // Navigation toggle
         this.navToggle.addEventListener('click', () => this.toggleNavigation());
         
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (this.isMobile && this.navMenu.classList.contains('active') && 
+                !this.navMenu.contains(e.target) && !this.navToggle.contains(e.target)) {
+                this.toggleNavigation();
+            }
+        });
+        
         // Navigation links
         this.navLinks.forEach(link => {
             link.addEventListener('click', (e) => this.handleNavClick(e));
         });
 
-        // Scroll events
-        window.addEventListener('scroll', () => {
+        // Scroll events with throttling for better performance
+        window.addEventListener('scroll', this.throttle(() => {
             this.handleScroll();
             this.updateActiveNavLink();
-        });
+        }, 16)); // ~60fps
 
         // Button scroll events
         document.querySelectorAll('[data-scroll-to]').forEach(btn => {
@@ -75,18 +176,76 @@ class VulkanLabsWebsite {
             btn.addEventListener('click', (e) => this.filterProjects(e));
         });
 
-        // Service card tilt effect
-        this.setupTiltEffect();
+        // Service card tilt effect (desktop only)
+        if (!this.isMobile && !this.isTouch) {
+            this.setupTiltEffect();
+        }
 
-        // Resize handler
-        window.addEventListener('resize', () => this.handleResize());
+        // Resize handler with debouncing
+        window.addEventListener('resize', this.debounce(() => {
+            this.handleResize();
+        }, 250));
 
         // Form field handlers for better UX
         this.setupFormFieldHandlers();
+        
+        // Intersection Observer for performance
+        this.setupIntersectionObserver();
+    }
+
+    setupIntersectionObserver() {
+        // Only load heavy animations when elements are visible
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Load animations for visible elements
+                    this.loadElementAnimations(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe sections for lazy loading animations
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    }
+
+    loadElementAnimations(element) {
+        // Only load heavy animations when needed
+        if (element.id === 'services' && !this.isMobile) {
+            this.createServicesEffects();
+        }
+    }
+
+    createServicesEffects() {
+        // Create floating particles for services section (desktop only)
+        if (this.isMobile || this.reducedMotion) return;
+
+        const servicesSection = document.querySelector('.services');
+        if (!servicesSection || servicesSection.dataset.animated) return;
+
+        servicesSection.dataset.animated = 'true';
+        
+        // Add energy particles
+        for (let i = 0; i < 10; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'energy-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            
+            const container = servicesSection.querySelector('.services-energy-particles');
+            if (container) {
+                container.appendChild(particle);
+            }
+        }
     }
 
     setupFormFieldHandlers() {
-        // Handle form field focus/blur for better label animation
         const formFields = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
         
         formFields.forEach(field => {
@@ -152,6 +311,11 @@ class VulkanLabsWebsite {
     toggleNavigation() {
         this.navMenu.classList.toggle('active');
         this.navToggle.classList.toggle('active');
+        
+        // Prevent body scroll when mobile menu is open
+        if (this.isMobile) {
+            document.body.style.overflow = this.navMenu.classList.contains('active') ? 'hidden' : '';
+        }
     }
 
     handleNavClick(e) {
@@ -160,16 +324,17 @@ class VulkanLabsWebsite {
         this.scrollToSection(targetId);
         
         // Close mobile menu
-        this.navMenu.classList.remove('active');
-        this.navToggle.classList.remove('active');
+        if (this.isMobile) {
+            this.navMenu.classList.remove('active');
+            this.navToggle.classList.remove('active');
+            document.body.style.overflow = '';
+        }
     }
 
     scrollToSection(targetId) {
         const target = document.getElementById(targetId);
         if (target) {
-            // Calculate offset based on screen size
-            const isMobile = window.innerWidth <= 768;
-            const navbarHeight = isMobile ? 60 : 70;
+            const navbarHeight = this.isMobile ? 60 : 70;
             const offsetTop = target.offsetTop - navbarHeight;
             
             window.scrollTo({
@@ -189,14 +354,15 @@ class VulkanLabsWebsite {
             this.navbar.classList.remove('scrolled');
         }
 
-        // Parallax effects
-        this.updateParallax(scrollY);
+        // Parallax effects (desktop only)
+        if (!this.isMobile && !this.reducedMotion) {
+            this.updateParallax(scrollY);
+        }
     }
 
     updateActiveNavLink() {
         const sections = document.querySelectorAll('section');
-        const isMobile = window.innerWidth <= 768;
-        const navbarHeight = isMobile ? 60 : 70;
+        const navbarHeight = this.isMobile ? 60 : 70;
         const scrollPosition = window.scrollY + navbarHeight + 50;
 
         sections.forEach(section => {
@@ -214,68 +380,71 @@ class VulkanLabsWebsite {
 
     updateParallax(scrollY) {
         // Only apply parallax on larger screens for better performance
-        if (window.innerWidth > 768) {
-            // Hero background parallax
-            const heroBackground = document.querySelector('.hero-background');
-            if (heroBackground) {
-                heroBackground.style.transform = `translateY(${scrollY * 0.5}px)`;
-            }
+        if (this.isMobile) return;
 
-            // Floating elements parallax
-            const floatingElements = document.querySelectorAll('.float-element');
-            floatingElements.forEach((element, index) => {
-                const speed = 0.1 + (index * 0.05);
-                element.style.transform = `translateY(${scrollY * speed}px)`;
-            });
+        // Hero background parallax
+        const heroBackground = document.querySelector('.hero-background');
+        if (heroBackground) {
+            heroBackground.style.transform = `translateY(${scrollY * 0.5}px)`;
         }
+
+        // Floating elements parallax
+        const floatingElements = document.querySelectorAll('.float-element');
+        floatingElements.forEach((element, index) => {
+            const speed = 0.1 + (index * 0.05);
+            element.style.transform = `translateY(${scrollY * speed}px)`;
+        });
     }
 
     createParticles() {
         const particlesContainer = document.getElementById('particles');
-        if (!particlesContainer || window.innerWidth <= 768) return; // Skip on mobile for performance
+        if (!particlesContainer || this.isMobile || this.reducedMotion) return;
 
-        const particleCount = 50;
+        const particleCount = 30; // Reduced for better performance
         
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
             particle.style.cssText = `
                 position: absolute;
-                width: ${Math.random() * 4 + 1}px;
-                height: ${Math.random() * 4 + 1}px;
+                width: ${Math.random() * 3 + 1}px;
+                height: ${Math.random() * 3 + 1}px;
                 background: rgba(99, 102, 241, ${Math.random() * 0.5 + 0.2});
                 border-radius: 50%;
                 left: ${Math.random() * 100}%;
                 top: ${Math.random() * 100}%;
-                animation: particleFloat ${Math.random() * 20 + 10}s linear infinite;
+                animation: particleFloat ${Math.random() * 15 + 10}s linear infinite;
                 animation-delay: ${Math.random() * 5}s;
             `;
             particlesContainer.appendChild(particle);
         }
 
-        // Add particle animation CSS
-        const particleStyles = `
-            @keyframes particleFloat {
-                0% {
-                    transform: translateY(100vh) rotate(0deg);
-                    opacity: 0;
+        // Add particle animation CSS if not exists
+        if (!document.querySelector('#particle-keyframes')) {
+            const particleStyles = `
+                @keyframes particleFloat {
+                    0% {
+                        transform: translateY(100vh) rotate(0deg);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 1;
+                    }
+                    90% {
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(-100px) rotate(360deg);
+                        opacity: 0;
+                    }
                 }
-                10% {
-                    opacity: 1;
-                }
-                90% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(-100px) rotate(360deg);
-                    opacity: 0;
-                }
-            }
-        `;
-        
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = particleStyles;
-        document.head.appendChild(styleSheet);
+            `;
+            
+            const styleSheet = document.createElement('style');
+            styleSheet.id = 'particle-keyframes';
+            styleSheet.textContent = particleStyles;
+            document.head.appendChild(styleSheet);
+        }
     }
 
     setupScrollAnimations() {
@@ -308,8 +477,8 @@ class VulkanLabsWebsite {
     }
 
     animateCounter(element) {
-        const target = parseInt(element.getAttribute('data-count'));
-        const duration = 2000;
+        const target = parseInt(element.getAttribute('data-count')) || parseInt(element.textContent);
+        const duration = this.isMobile ? 1000 : 2000; // Faster on mobile
         const increment = target / (duration / 16);
         let current = 0;
 
@@ -324,8 +493,8 @@ class VulkanLabsWebsite {
     }
 
     setupCursor() {
-        // Skip custom cursor on mobile devices
-        if (window.innerWidth <= 768 || 'ontouchstart' in window) return;
+        // Skip custom cursor on mobile devices and touch devices
+        if (this.isMobile || this.isTouch) return;
 
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
@@ -353,7 +522,9 @@ class VulkanLabsWebsite {
             cursorOutline.style.left = `${outlineX}px`;
             cursorOutline.style.top = `${outlineY}px`;
             
-            requestAnimationFrame(animateOutline);
+            if (!this.isMobile) {
+                requestAnimationFrame(animateOutline);
+            }
         };
         animateOutline();
 
@@ -382,15 +553,15 @@ class VulkanLabsWebsite {
             setTimeout(() => {
                 line.style.opacity = '1';
                 line.style.animation = 'none';
-            }, index * 100 + 1000);
+            }, index * (this.isMobile ? 50 : 100) + 1000);
         });
     }
 
     setupTiltEffect() {
-        // Skip tilt effect on mobile for better performance
-        if (window.innerWidth <= 768) return;
+        // Skip tilt effect on mobile and touch devices
+        if (this.isMobile || this.isTouch) return;
 
-        const tiltElements = document.querySelectorAll('[data-tilt]');
+        const tiltElements = document.querySelectorAll('.service-card, .project-card');
         
         tiltElements.forEach(element => {
             element.addEventListener('mousemove', (e) => {
@@ -401,8 +572,8 @@ class VulkanLabsWebsite {
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                const rotateX = (y - centerY) / centerY * -10;
-                const rotateY = (x - centerX) / centerX * 10;
+                const rotateX = (y - centerY) / centerY * -5; // Reduced intensity
+                const rotateY = (x - centerX) / centerX * 5;
                 
                 element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
             });
@@ -451,7 +622,7 @@ class VulkanLabsWebsite {
         submitBtn.disabled = true;
         
         try {
-            // Submit to your Formspree endpoint
+            // Submit to Formspree endpoint
             const response = await fetch('https://formspree.io/f/xgvywwba', {
                 method: 'POST',
                 body: formData,
@@ -497,18 +668,19 @@ class VulkanLabsWebsite {
         notification.className = `notification notification-${type}`;
         notification.style.cssText = `
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: ${this.isMobile ? '10px' : '20px'};
+            right: ${this.isMobile ? '10px' : '20px'};
+            left: ${this.isMobile ? '10px' : 'auto'};
             padding: 1rem 1.5rem;
             background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#6366f1'};
             color: white;
-            border-radius: 12px;
+            border-radius: ${this.isMobile ? '8px' : '12px'};
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             z-index: 10000;
-            transform: translateX(100%);
+            transform: translateY(-100%);
             transition: transform 0.3s ease;
-            max-width: 320px;
-            font-size: 0.875rem;
+            max-width: ${this.isMobile ? 'none' : '320px'};
+            font-size: ${this.isMobile ? '0.9rem' : '0.875rem'};
             line-height: 1.4;
             word-wrap: break-word;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -518,13 +690,13 @@ class VulkanLabsWebsite {
         document.body.appendChild(notification);
         
         // Animate in
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 100);
+        requestAnimationFrame(() => {
+            notification.style.transform = 'translateY(0)';
+        });
         
         // Remove after delay
         setTimeout(() => {
-            notification.style.transform = 'translateX(100%)';
+            notification.style.transform = 'translateY(-100%)';
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.remove();
@@ -567,170 +739,85 @@ class VulkanLabsWebsite {
     }
 
     handleResize() {
+        // Update mobile/tablet detection
+        const wasMobile = this.isMobile;
+        this.isMobile = window.innerWidth <= 768;
+        this.isTablet = window.innerWidth <= 1024 && window.innerWidth > 768;
+        
         // Handle responsive behaviors
-        if (window.innerWidth > 768) {
+        if (this.isMobile) {
             this.navMenu.classList.remove('active');
             this.navToggle.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Disable heavy effects on mobile
+            if (!wasMobile) {
+                this.disableDesktopEffects();
+            }
+        } else {
+            // Re-enable desktop effects if switching from mobile
+            if (wasMobile) {
+                this.enableDesktopEffects();
+            }
         }
         
-        // Re-initialize cursor on resize
-        if (window.innerWidth > 768 && !('ontouchstart' in window)) {
-            this.setupCursor();
-        }
+        // Update viewport height
+        this.setupViewportFix();
     }
 
-    // Advanced animation utilities
-    easeInOutCubic(t) {
-        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    disableDesktopEffects() {
+        // Remove particles
+        document.querySelectorAll('.particle').forEach(p => p.remove());
+        
+        // Disable cursor
+        const cursorElements = document.querySelectorAll('.cursor-dot, .cursor-outline');
+        cursorElements.forEach(el => el.style.display = 'none');
+        
+        // Add mobile class for CSS optimizations
+        document.documentElement.classList.add('mobile-optimized');
     }
 
-    animateValue(obj, start, end, duration, callback) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const easedProgress = this.easeInOutCubic(progress);
-            const value = start + (end - start) * easedProgress;
-            
-            if (callback) callback(value);
-            
-            if (progress < 1) {
-                requestAnimationFrame(step);
+    enableDesktopEffects() {
+        // Re-enable cursor
+        const cursorElements = document.querySelectorAll('.cursor-dot, .cursor-outline');
+        cursorElements.forEach(el => el.style.display = '');
+        
+        // Re-create particles
+        this.createParticles();
+        this.setupCursor();
+        
+        // Remove mobile class
+        document.documentElement.classList.remove('mobile-optimized');
+    }
+
+    // Utility functions
+    debounce(func, wait, immediate) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                if (!immediate) func(...args);
+            };
+            const callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func(...args);
+        };
+    }
+
+    throttle(func, limit) {
+        let inThrottle;
+        return function(...args) {
+            if (!inThrottle) {
+                func.apply(this, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
             }
         };
-        requestAnimationFrame(step);
     }
 
-    // Matrix rain effect for hero background
-    createMatrixRain() {
-        // Skip on mobile for performance
-        if (window.innerWidth <= 768) return;
-
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.1;
-            z-index: -1;
-        `;
-        
-        const heroBackground = document.querySelector('.hero-background');
-        if (heroBackground) {
-            heroBackground.appendChild(canvas);
-        }
-        
-        const resizeCanvas = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        
-        const chars = '01アカサタナハマヤラワガザダバパイキシチニヒミリヰギジヂビピウクスツヌフムユルグズヅブプエケセテネヘメレヱゲゼデベペオコソトノホモヨロヲゴゾドボポヴッン';
-        const charArray = chars.split('');
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = [];
-        
-        for (let x = 0; x < columns; x++) {
-            drops[x] = 1;
-        }
-        
-        const draw = () => {
-            ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = '#6366f1';
-            ctx.font = `${fontSize}px monospace`;
-            
-            for (let i = 0; i < drops.length; i++) {
-                const text = charArray[Math.floor(Math.random() * charArray.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        };
-        
-        setInterval(draw, 50);
-    }
-
-    // Initialize advanced features
-    initAdvancedFeatures() {
-        // Matrix rain effect
-        if (window.innerWidth > 768) {
-            this.createMatrixRain();
-        }
-        
-        // Add floating action button
-        this.createFloatingActionButton();
-        
-        // Initialize performance monitor
-        this.initPerformanceMonitor();
-    }
-
-    createFloatingActionButton() {
-        const fab = document.createElement('div');
-        fab.innerHTML = '<i class="fas fa-rocket"></i>';
-        fab.style.cssText = `
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #6366f1, #ec4899);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            opacity: 0;
-            transform: scale(0);
-        `;
-        
-        fab.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        
-        fab.addEventListener('mouseenter', () => {
-            fab.style.transform = 'scale(1.1)';
-            fab.style.boxShadow = '0 15px 35px rgba(99, 102, 241, 0.4)';
-        });
-        
-        fab.addEventListener('mouseleave', () => {
-            fab.style.transform = 'scale(1)';
-            fab.style.boxShadow = '0 10px 25px rgba(99, 102, 241, 0.3)';
-        });
-        
-        document.body.appendChild(fab);
-        
-        // Show/hide based on scroll position
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 500) {
-                fab.style.opacity = '1';
-                fab.style.transform = 'scale(1)';
-            } else {
-                fab.style.opacity = '0';
-                fab.style.transform = 'scale(0)';
-            }
-        });
-    }
-
+    // Performance monitoring for development
     initPerformanceMonitor() {
-        // Simple FPS counter for development
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             let fps = 0;
             let lastTime = performance.now();
@@ -753,7 +840,7 @@ class VulkanLabsWebsite {
             const updateFPS = (currentTime) => {
                 fps = Math.round(1000 / (currentTime - lastTime));
                 lastTime = currentTime;
-                monitor.textContent = `FPS: ${fps}`;
+                monitor.textContent = `FPS: ${fps} | Mobile: ${this.isMobile}`;
                 requestAnimationFrame(updateFPS);
             };
             
@@ -762,19 +849,25 @@ class VulkanLabsWebsite {
     }
 }
 
-// Advanced Dynamic Scroll Animations Class
+// Advanced Dynamic Scroll Animations Class (Desktop Only)
 class VulkanScrollAnimations {
     constructor() {
+        this.isMobile = window.innerWidth <= 768;
+        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (this.isMobile || this.reducedMotion) {
+            return; // Skip heavy animations on mobile
+        }
+        
         this.init();
         this.setupScrollObserver();
         this.createDynamicBackground();
         this.setupMouseEffects();
         this.createDataVisualization();
-        this.setupGlitchEffects();
     }
 
     init() {
-        // Initialize animation system
+        // Initialize animation system (desktop only)
         this.scrollProgress = 0;
         this.mouseX = 0;
         this.mouseY = 0;
@@ -801,8 +894,6 @@ class VulkanScrollAnimations {
         }
         
         document.body.appendChild(morphBg);
-        
-        // Animate blobs based on scroll
         this.morphBlobs = morphBg.querySelectorAll('.morph-blob');
     }
 
@@ -818,14 +909,14 @@ class VulkanScrollAnimations {
             z-index: -1;
         `;
         
-        // Create network lines
-        for (let i = 0; i < 20; i++) {
+        // Create network lines (reduced number for performance)
+        for (let i = 0; i < 10; i++) {
             const line = document.createElement('div');
             line.className = 'network-line';
             line.style.cssText = `
                 top: ${Math.random() * 100}%;
                 left: ${Math.random() * 100}%;
-                width: ${Math.random() * 200 + 100}px;
+                width: ${Math.random() * 150 + 75}px;
                 transform: rotate(${Math.random() * 180}deg);
                 animation-delay: ${Math.random() * 4}s;
             `;
@@ -840,9 +931,7 @@ class VulkanScrollAnimations {
             'agent.execute()', 'import vulkan_ai', 'class AgentPipeline:',
             'async def process()', 'torch.compile()', 'agent.memory.scoped',
             'from agents import *', 'gpu.accelerate()', 'ml.inference()',
-            'pipeline.resilient', 'fallback.enabled', 'def neural_net():',
-            'import tensorflow', 'cuda.malloc()', 'agent.adapt()',
-            'production.ready'
+            'pipeline.resilient', 'fallback.enabled', 'def neural_net():'
         ];
         
         const container = document.createElement('div');
@@ -856,16 +945,16 @@ class VulkanScrollAnimations {
             z-index: -1;
         `;
         
-        // Create floating code particles
+        // Create floating code particles (reduced frequency)
         setInterval(() => {
-            if (container.children.length < 15 && window.innerWidth > 768) {
+            if (container.children.length < 8) {
                 const particle = document.createElement('div');
                 particle.className = 'code-particle';
                 particle.textContent = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
                 particle.style.cssText = `
                     left: ${Math.random() * 100}%;
-                    animation-duration: ${Math.random() * 10 + 15}s;
-                    animation-delay: ${Math.random() * 5}s;
+                    animation-duration: ${Math.random() * 8 + 12}s;
+                    animation-delay: ${Math.random() * 3}s;
                 `;
                 container.appendChild(particle);
                 
@@ -873,9 +962,9 @@ class VulkanScrollAnimations {
                     if (particle.parentNode) {
                         particle.remove();
                     }
-                }, 20000);
+                }, 15000);
             }
-        }, 2000);
+        }, 3000);
         
         document.body.appendChild(container);
     }
@@ -913,33 +1002,11 @@ class VulkanScrollAnimations {
         // Update morphing shapes
         this.morphBlobs.forEach((blob, index) => {
             const rotation = this.scrollProgress * 360 * (index + 1);
-            const scale = 1 + Math.sin(this.scrollProgress * Math.PI * 4) * 0.2;
-            const translateY = Math.sin(this.scrollProgress * Math.PI * 2) * 50;
-            const translateX = Math.cos(this.scrollProgress * Math.PI * 2) * 30;
+            const scale = 1 + Math.sin(this.scrollProgress * Math.PI * 4) * 0.1;
+            const translateY = Math.sin(this.scrollProgress * Math.PI * 2) * 30;
+            const translateX = Math.cos(this.scrollProgress * Math.PI * 2) * 20;
             
             blob.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${rotation}deg) scale(${scale})`;
-        });
-        
-        // Parallax effect for sections
-        this.updateParallaxElements();
-    }
-
-    updateParallaxElements() {
-        const elements = document.querySelectorAll('.service-card, .project-card, .about-visual');
-        
-        elements.forEach((element, index) => {
-            const rect = element.getBoundingClientRect();
-            const elementTop = rect.top;
-            const elementHeight = rect.height;
-            const windowHeight = window.innerHeight;
-            
-            if (elementTop < windowHeight && elementTop > -elementHeight) {
-                const progress = (windowHeight - elementTop) / (windowHeight + elementHeight);
-                const translateY = progress * 30 * (index % 2 === 0 ? 1 : -1);
-                const rotateX = progress * 5;
-                
-                element.style.transform = `translateY(${translateY}px) rotateX(${rotateX}deg)`;
-            }
         });
     }
 
@@ -962,14 +1029,14 @@ class VulkanScrollAnimations {
             observer.observe(el);
         });
         
-        // Add new dynamic elements
+        // Add dynamic terminals
         this.addDynamicTerminals();
         this.addDataVisualization();
     }
 
     addDynamicTerminals() {
         const aboutSection = document.querySelector('.about');
-        if (aboutSection) {
+        if (aboutSection && !aboutSection.querySelector('.dynamic-terminal')) {
             // Create main terminal
             const terminal = document.createElement('div');
             terminal.className = 'dynamic-terminal';
@@ -988,29 +1055,9 @@ class VulkanScrollAnimations {
                 <div class="terminal-line">Performance: 15.7 TFLOPS <span class="typing-cursor">█</span></div>
             `;
             
-            // Create system monitor terminal
-            const systemMonitor = document.createElement('div');
-            systemMonitor.className = 'system-monitor-terminal';
-            systemMonitor.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                    <div style="width: 12px; height: 12px; background: #ff5f57; border-radius: 50%;"></div>
-                    <div style="width: 12px; height: 12px; background: #ffbd2e; border-radius: 50%;"></div>
-                    <div style="width: 12px; height: 12px; background: #28ca42; border-radius: 50%;"></div>
-                    <span style="color: #fff; font-size: 0.875rem; margin-left: 1rem;">system_monitor.py</span>
-                </div>
-                <div class="terminal-line">$ nvidia-smi</div>
-                <div class="terminal-line">GPU: RTX 4090 Ti x8 | Temp: 67°C</div>
-                <div class="terminal-line">Memory: 192GB VRAM | Usage: 89%</div>
-                <div class="terminal-line">Agents: 24 active | Bandwidth: 24TB/s</div>
-                <div class="terminal-line">CUDA Cores: 83,968 | Driver: 545.29</div>
-                <div class="terminal-line">AI Workload: <span class="highlight">Optimal</span> | Fallbacks: Ready</div>
-                <div class="terminal-line">Pipeline Status: <span class="highlight">Resilient</span> <span class="typing-cursor">█</span></div>
-            `;
-            
             aboutSection.appendChild(terminal);
-            aboutSection.appendChild(systemMonitor);
             
-            // Animate terminals when visible
+            // Animate terminal when visible
             const terminalObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1020,7 +1067,6 @@ class VulkanScrollAnimations {
             });
             
             terminalObserver.observe(terminal);
-            terminalObserver.observe(systemMonitor);
         }
     }
 
@@ -1035,31 +1081,13 @@ class VulkanScrollAnimations {
                     const cursor = line.querySelector('.typing-cursor');
                     cursor.style.animation = 'blink 1s infinite';
                 }
-                
-                // Add special effects for highlight text
-                const highlight = line.querySelector('.highlight');
-                if (highlight) {
-                    setTimeout(() => {
-                        highlight.style.textShadow = '0 0 15px rgba(255, 107, 107, 0.8)';
-                    }, 200);
-                }
-            }, index * 600); // Slightly slower for better readability
+            }, index * 400);
         });
-        
-        // Add terminal completion sound effect (visual feedback)
-        setTimeout(() => {
-            const lastLine = lines[lines.length - 1];
-            if (lastLine) {
-                lastLine.style.borderLeft = '3px solid #00ff41';
-                lastLine.style.paddingLeft = '0.5rem';
-                lastLine.style.transition = 'all 0.3s ease';
-            }
-        }, (lines.length * 600) + 500);
     }
 
     addDataVisualization() {
         const servicesSection = document.querySelector('.services');
-        if (servicesSection) {
+        if (servicesSection && !servicesSection.querySelector('.data-viz')) {
             const dataViz = document.createElement('div');
             dataViz.className = 'data-viz';
             dataViz.innerHTML = `
@@ -1080,12 +1108,6 @@ class VulkanScrollAnimations {
                     <span style="color: #a1a1aa;">Neural Processing Speed</span>
                     <div class="viz-bar">
                         <div class="viz-bar-fill" data-width="96"></div>
-                    </div>
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <span style="color: #a1a1aa;">Memory Bandwidth</span>
-                    <div class="viz-bar">
-                        <div class="viz-bar-fill" data-width="87"></div>
                     </div>
                 </div>
                 <div>
@@ -1145,55 +1167,53 @@ class VulkanScrollAnimations {
                     // Add completion glow effect
                     setTimeout(() => {
                         bar.style.boxShadow = `0 0 20px rgba(99, 102, 241, 0.6)`;
-                    }, 1500);
+                    }, 1000);
                 }, 100);
-            }, index * 400);
+            }, index * 300);
         });
     }
 
     setupMouseEffects() {
-        const trail = document.createElement('div');
-        trail.className = 'mouse-trail';
-        document.body.appendChild(trail);
-        
+        // Only on desktop
+        if (window.innerWidth <= 768) return;
+
         let trailDots = [];
-        const maxTrailLength = 20;
+        const maxTrailLength = 15;
         
         document.addEventListener('mousemove', (e) => {
-            this.mouseX = e.clientX;
-            this.mouseY = e.clientY;
-            
-            // Create trail dot
-            const dot = document.createElement('div');
-            dot.className = 'trail-dot';
-            dot.style.left = `${e.clientX}px`;
-            dot.style.top = `${e.clientY}px`;
-            
-            trail.appendChild(dot);
-            trailDots.push(dot);
-            
-            if (trailDots.length > maxTrailLength) {
-                const oldDot = trailDots.shift();
-                if (oldDot.parentNode) {
-                    oldDot.remove();
+            // Create trail dot with reduced frequency
+            if (Math.random() > 0.7) {
+                const dot = document.createElement('div');
+                dot.className = 'trail-dot';
+                dot.style.left = `${e.clientX}px`;
+                dot.style.top = `${e.clientY}px`;
+                
+                document.body.appendChild(dot);
+                trailDots.push(dot);
+                
+                if (trailDots.length > maxTrailLength) {
+                    const oldDot = trailDots.shift();
+                    if (oldDot.parentNode) {
+                        oldDot.remove();
+                    }
                 }
+                
+                setTimeout(() => {
+                    if (dot.parentNode) {
+                        dot.remove();
+                    }
+                }, 800);
             }
-            
-            setTimeout(() => {
-                if (dot.parentNode) {
-                    dot.remove();
-                }
-            }, 1000);
         });
     }
 
     createDynamicBackground() {
-        // Add dynamic particles that respond to scroll
+        // Add dynamic particles that respond to scroll (reduced frequency)
         setInterval(() => {
-            if (Math.random() > 0.7 && window.innerWidth > 768) {
+            if (Math.random() > 0.8 && window.innerWidth > 768) {
                 this.createScrollParticle();
             }
-        }, 1000);
+        }, 2000);
     }
 
     createScrollParticle() {
@@ -1208,31 +1228,8 @@ class VulkanScrollAnimations {
             z-index: -1;
             left: ${Math.random() * 100}%;
             top: 100%;
-            animation: particleRise 8s linear forwards;
+            animation: particleRise 6s linear forwards;
         `;
-        
-        const keyframes = `
-            @keyframes particleRise {
-                0% {
-                    transform: translateY(0px);
-                    opacity: 0;
-                }
-                10%, 90% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(-100vh);
-                    opacity: 0;
-                }
-            }
-        `;
-        
-        if (!document.querySelector('#particle-keyframes')) {
-            const style = document.createElement('style');
-            style.id = 'particle-keyframes';
-            style.textContent = keyframes;
-            document.head.appendChild(style);
-        }
         
         document.body.appendChild(particle);
         
@@ -1240,38 +1237,14 @@ class VulkanScrollAnimations {
             if (particle.parentNode) {
                 particle.remove();
             }
-        }, 8000);
+        }, 6000);
     }
 
-    setupGlitchEffects() {
-        // Add glitch effect to main titles
-        const titles = document.querySelectorAll('h1, h2');
-        titles.forEach(title => {
-            if (title.textContent.includes('Fragile') || title.textContent.includes('Resilient') || title.textContent.includes('AI')) {
-                title.classList.add('glitch-text');
-                title.setAttribute('data-text', title.textContent);
-                
-
-                // Also trigger on page load after delay
-                setTimeout(() => {
-                    title.classList.add('active');
-                    setTimeout(() => {
-                        title.classList.remove('active');
-                    }, 1500);
-                }, 3000);
-            }
-        });
-    }
     animateElement(element) {
         // Enhanced animation for different element types
         if (element.classList.contains('service-card')) {
             element.style.transform = 'translateY(0) rotateX(0) scale(1)';
             element.style.opacity = '1';
-            
-            // Add holographic effect
-            setTimeout(() => {
-                element.style.transition = 'all 0.3s ease';
-            }, 600);
         }
         
         if (element.classList.contains('project-card')) {
@@ -1293,7 +1266,7 @@ class VulkanScrollAnimations {
 
     animateCounter(element) {
         const target = parseInt(element.getAttribute('data-count')) || parseInt(element.textContent);
-        const duration = 2000;
+        const duration = 1500;
         const increment = target / (duration / 16);
         let current = 0;
 
@@ -1312,12 +1285,14 @@ class VulkanScrollAnimations {
 document.addEventListener('DOMContentLoaded', () => {
     const website = new VulkanLabsWebsite();
     
-    // Initialize advanced features after a short delay
+    // Initialize advanced features after a short delay (desktop only)
     setTimeout(() => {
-        website.initAdvancedFeatures();
-        
-        // Initialize dynamic scroll animations
-        window.vulkanScrollAnimations = new VulkanScrollAnimations();
+        if (!website.isMobile && !website.reducedMotion) {
+            website.initPerformanceMonitor();
+            
+            // Initialize dynamic scroll animations
+            window.vulkanScrollAnimations = new VulkanScrollAnimations();
+        }
     }, 1500);
 });
 
@@ -1392,4 +1367,27 @@ if ('serviceWorker' in navigator) {
                 console.log('SW registration failed: ', registrationError);
             });
     });
+}
+
+// Mobile-specific optimizations
+if (window.innerWidth <= 768) {
+    // Disable hover effects on touch devices
+    const style = document.createElement('style');
+    style.textContent = `
+        .service-card:hover,
+        .project-card:hover,
+        .btn:hover,
+        .filter-btn:hover {
+            transform: none !important;
+        }
+        
+        .service-card::after,
+        .holographic-card::before {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add touch-friendly spacing
+    document.documentElement.style.setProperty('--touch-target-size', '44px');
 }
