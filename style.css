@@ -767,6 +767,7 @@ body {
     border-radius: 50%;
     animation: float 3s ease-in-out infinite;
     box-shadow: var(--shadow-glow);
+    z-index: 1000;
 }
 
 @keyframes float {
