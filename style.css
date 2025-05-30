@@ -754,7 +754,6 @@ body {
     position: relative;
     width: 300px;
     height: 300px;
-    z-index: 1001;
 }
 
 .tech-orb {
@@ -768,7 +767,7 @@ body {
     border-radius: 50%;
     animation: float 3s ease-in-out infinite;
     box-shadow: var(--shadow-glow);
-    z-index: 1000;
+    z-index: 10;
 }
 
 @keyframes float {
@@ -827,6 +826,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 15;
 }
 
 .float-element {
