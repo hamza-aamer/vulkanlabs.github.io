@@ -291,20 +291,31 @@ class VulkanLabsWebsite {
     updateFieldLabel(field) {
         const label = field.nextElementSibling;
         if (!label || !label.matches('label')) return;
-
-        const hasValue = field.value.trim() !== '';
+    
+        let hasValue = false;
         const isFocused = document.activeElement === field;
         
-        if (hasValue || isFocused) {
-            label.classList.add('active');
-            if (field.tagName === 'SELECT' && hasValue) {
+        // Properly check if field has a value
+        if (field.tagName === 'SELECT') {
+            // For select elements, check if a non-empty option is selected
+            hasValue = field.value && field.value.trim() !== '';
+            
+            // Add or remove has-value class for CSS targeting
+            if (hasValue) {
                 field.classList.add('has-value');
-            }
-        } else {
-            label.classList.remove('active');
-            if (field.tagName === 'SELECT') {
+            } else {
                 field.classList.remove('has-value');
             }
+        } else {
+            // For input and textarea elements
+            hasValue = field.value.trim() !== '';
+        }
+        
+        // Update label state
+        if (hasValue || isFocused) {
+            label.classList.add('active');
+        } else {
+            label.classList.remove('active');
         }
     }
 
