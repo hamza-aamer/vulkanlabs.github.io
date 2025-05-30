@@ -2113,6 +2113,17 @@ section:not(.hero) {
     position: relative;
     margin-bottom: 1.5rem;
 }
+/* Always float the label if the select is not empty */
+.form-group select:invalid + label,
+.form-group select:not([value]):not(:focus) + label {
+  top: -0.5rem;
+  left: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  background: var(--bg-secondary);
+  padding: 0 0.5rem;
+}
+
 
 .form-group input,
 .form-group select,
