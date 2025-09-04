@@ -1,4 +1,4 @@
-// Project data
+// Project data - Updated with only 3 main projects
 const projects = [
     {
         id: 'ascend',
@@ -122,90 +122,11 @@ const projects = [
             }
         },
         featured: true
-    },
-    {
-        id: 'gensynth',
-        title: 'GenSynth: Adversarial Image Translation',
-        subtitle: 'GANs & Deep Learning',
-        description: 'Generative adversarial framework utilizing CycleGAN and Conditional GANs for bidirectional face sketch-to-image translation, ensuring high-precision synthesis through cycle-consistency.',
-        image: 'assets/images/projects/gensynth-results.jpg',
-        technologies: ['Python', 'PyTorch', 'CycleGAN', 'Conditional GANs', 'Computer Vision', 'Deep Learning'],
-        achievements: [
-            'Bidirectional sketch-to-image translation with high fidelity',
-            'Cycle-consistency loss implementation for stable training',
-            'Pixel-wise L1 loss optimization for detailed preservation',
-            'High-precision synthesis with realistic texture generation',
-            'Advanced discriminator architectures for improved quality',
-            'Custom loss functions balancing realism and accuracy'
-        ],
-        metrics: {
-            'Translation': 'Bidirectional',
-            'Precision': 'High-fidelity',
-            'Loss': 'L1 + Cycle'
-        },
-        details: {
-            overview: 'GenSynth leverages state-of-the-art generative adversarial networks to enable seamless translation between face sketches and photorealistic images. The framework ensures high-quality results through advanced loss functions and architectural innovations.',
-            keyFeatures: [
-                'CycleGAN architecture for unpaired image translation',
-                'Conditional GANs for controlled generation',
-                'Cycle-consistency loss for bidirectional stability',
-                'Advanced discriminator networks with multi-scale analysis',
-                'Custom loss functions combining L1 and perceptual losses',
-                'Real-time inference capabilities with optimized models'
-            ],
-            technicalSpecs: {
-                'Architecture': 'CycleGAN + Conditional GAN hybrid',
-                'Framework': 'PyTorch with custom CUDA kernels',
-                'Loss Functions': 'Cycle-consistency + L1 + Perceptual',
-                'Training': 'Adversarial training with progressive growing',
-                'Performance': 'Real-time inference, GPU optimized',
-                'Output Quality': 'High-resolution, photorealistic results'
-            }
-        },
-        featured: false
-    },
-    {
-        id: 'neurocart',
-        title: 'NeuroCart: Cognitive Shopping Framework',
-        subtitle: 'Mobile AI & Real-time Detection',
-        description: 'Mobile application merging online and physical shopping experiences. Employs trained YOLO model for real-time item detection using device camera for seamless shopping integration.',
-        image: 'assets/images/projects/neurocart-app.jpg',
-        technologies: ['Python', 'Java', 'Kotlin', 'XML', 'YOLO', 'Mobile Development', 'TensorFlow Lite'],
-        achievements: [
-            'Real-time item detection via mobile camera with 90%+ accuracy',
-            'Seamless online-physical shopping experience integration',
-            'Custom trained YOLO model for retail product recognition',
-            'Cross-platform mobile application with native performance',
-            'Offline capability with on-device model inference',
-            'Advanced AR overlay for enhanced shopping experience'
-        ],
-        metrics: {
-            'Detection': 'Real-time',
-            'Platform': 'Cross-platform',
-            'Integration': 'Seamless'
-        },
-        details: {
-            overview: 'NeuroCart revolutionizes the shopping experience by bridging the gap between physical and digital retail. The application uses advanced computer vision to enable instant product recognition and seamless purchase workflows.',
-            keyFeatures: [
-                'Real-time object detection with custom YOLO model',
-                'AR overlay for product information and pricing',
-                'Seamless integration with e-commerce platforms',
-                'Offline mode with on-device inference',
-                'Social shopping features with recommendation engine',
-                'Advanced analytics and user behavior tracking'
-            ],
-            technicalSpecs: {
-                'Mobile Frameworks': 'Native Android (Kotlin), iOS (Swift)',
-                'ML Framework': 'TensorFlow Lite for mobile deployment',
-                'Computer Vision': 'Custom YOLO v5 model, OpenCV integration',
-                'Backend': 'Python Flask API with Redis caching',
-                'Database': 'PostgreSQL with product catalog management',
-                'Performance': '30+ FPS real-time detection, <100ms latency'
-            }
-        },
-        featured: false
     }
 ];
+
+// Rest of the JavaScript code remains the same...
+// (keeping all the existing functions for rendering, modal, etc.)
 
 // Render projects
 function renderProjects() {
@@ -213,7 +134,6 @@ function renderProjects() {
     if (!grid) return;
 
     const featuredProjects = projects.filter(p => p.featured);
-    const otherProjects = projects.filter(p => !p.featured);
 
     grid.innerHTML = '';
 
@@ -221,13 +141,6 @@ function renderProjects() {
     featuredProjects.forEach((project, index) => {
         const projectCard = createProjectCard(project, true);
         projectCard.classList.add('scroll-animate', `stagger-${index + 1}`);
-        grid.appendChild(projectCard);
-    });
-
-    // Render other projects
-    otherProjects.forEach((project, index) => {
-        const projectCard = createProjectCard(project, false);
-        projectCard.classList.add('scroll-animate', `stagger-${featuredProjects.length + index + 1}`);
         grid.appendChild(projectCard);
     });
 }
@@ -241,12 +154,12 @@ function createProjectCard(project, featured = false) {
         <div style="
             width: 100%; 
             height: 100%; 
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); 
+            background: linear-gradient(135deg, var(--cream-4) 0%, var(--cream-5) 100%); 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            color: white; 
-            font-size: 24px; 
+            color: var(--text-primary); 
+            font-size: 1.5rem; 
             font-weight: bold;
             text-align: center;
             padding: 20px;
@@ -306,11 +219,11 @@ function openProjectModal(projectId) {
                 <div style="
                     width: 100%; 
                     height: 300px; 
-                    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); 
+                    background: linear-gradient(135deg, var(--cream-4) 0%, var(--cream-5) 100%); 
                     display: flex; 
                     align-items: center; 
                     justify-content: center; 
-                    color: white; 
+                    color: var(--text-primary); 
                     font-size: 32px; 
                     font-weight: bold;
                     border-radius: 1rem;
@@ -381,7 +294,7 @@ function openProjectModal(projectId) {
         </div>
     `;
 
-    // Add modal styles
+    // Add modal styles (same as before)
     const modalStyles = `
         <style>
         .project-modal-content {
@@ -389,7 +302,7 @@ function openProjectModal(projectId) {
         }
         
         .project-subtitle-large {
-            color: var(--primary-color);
+            color: var(--accent);
             font-weight: 600;
             font-size: 1.2rem;
             text-transform: uppercase;
@@ -422,7 +335,7 @@ function openProjectModal(projectId) {
             font-size: 1.3rem;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--primary-color);
+            border-bottom: 2px solid var(--accent);
         }
         
         .achievements-list,
@@ -445,7 +358,7 @@ function openProjectModal(projectId) {
             content: '✓';
             position: absolute;
             left: 0;
-            color: var(--primary-color);
+            color: var(--accent);
             font-weight: bold;
         }
         
@@ -459,16 +372,16 @@ function openProjectModal(projectId) {
         .metric-large {
             text-align: center;
             padding: 1rem;
-            background: var(--bg-secondary);
+            background: var(--cream-3);
             border-radius: 0.5rem;
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--cream-4);
         }
         
         .metric-value-large {
             display: block;
             font-size: 1.5rem;
             font-weight: bold;
-            color: var(--primary-color);
+            color: var(--accent);
             margin-bottom: 0.5rem;
         }
         
@@ -487,9 +400,9 @@ function openProjectModal(projectId) {
         
         .spec-item {
             padding: 0.8rem;
-            background: var(--bg-secondary);
+            background: var(--cream-3);
             border-radius: 0.5rem;
-            border-left: 4px solid var(--primary-color);
+            border-left: 4px solid var(--accent);
         }
         
         .spec-item strong {
