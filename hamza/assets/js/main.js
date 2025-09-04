@@ -8,6 +8,7 @@ class Portfolio {
         this.setupSmoothScrolling();
         this.setupScrollEffects();
         this.setupInteractions();
+        this.setupCarousel();
         this.handlePageLoad();
     }
 
@@ -19,21 +20,22 @@ class Portfolio {
     }
 
     animateHeroElements() {
-        const badges = document.querySelectorAll('.badge');
+        const affiliations = document.querySelectorAll('.affiliation-item');
         const floatElements = document.querySelectorAll('.float-element');
         
-        badges.forEach((badge, index) => {
+        affiliations.forEach((item, index) => {
             setTimeout(() => {
-                badge.style.opacity = '1';
-                badge.style.transform = 'translateY(0)';
-            }, 800 + (index * 200));
+                item.style.opacity = '1';
+            }, 1200 + (index * 100));
         });
 
         floatElements.forEach((element, index) => {
             setTimeout(() => {
                 element.style.opacity = '1';
-            }, 1200 + (index * 300));
+            }, 800 + (index * 300));
         });
+
+
     }
 
     setupSmoothScrolling() {
@@ -133,6 +135,72 @@ class Portfolio {
                     this.style.transform = '';
                 }, 150);
             });
+        });
+    }
+
+    setupCarousel() {
+        const track = document.getElementById('projectsTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        if (!track || !prevBtn || !nextBtn) return;
+
+        const cards = track.querySelectorAll('.project-card');
+        const totalCards = cards.length;
+        let currentIndex = 0;
+        let isTransitioning = false;
+
+        // Clone cards for infinite loop
+        const cloneCards = () => {
+            cards.forEach(card => {
+                const clone = card.cloneNode(true);
+                track.appendChild(clone);
+            });
+        };
+
+        // Initialize with clones
+        cloneCards();
+
+        const updateCarousel = (direction = 'next') => {
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const cardWidth = cards[0].offsetWidth;
+            const gap = 32; // var(--space-lg) = 2rem = 32px
+            const moveDistance = cardWidth + gap;
+
+            if (direction === 'next') {
+                currentIndex = (currentIndex + 1) % totalCards;
+                track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                track.style.transform = `translateX(-${(currentIndex + totalCards) * moveDistance}px)`;
+            } else {
+                currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+                track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                track.style.transform = `translateX(-${(currentIndex + totalCards) * moveDistance}px)`;
+            }
+
+            // Reset position after transition for infinite loop
+            setTimeout(() => {
+                track.style.transition = 'none';
+                track.style.transform = `translateX(-${(currentIndex + totalCards) * moveDistance}px)`;
+                isTransitioning = false;
+            }, 500);
+        };
+
+        prevBtn.addEventListener('click', () => updateCarousel('prev'));
+        nextBtn.addEventListener('click', () => updateCarousel('next'));
+
+        // Initialize position
+        const cardWidth = cards[0].offsetWidth;
+        const gap = 32;
+        track.style.transform = `translateX(-${totalCards * (cardWidth + gap)}px)`;
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const newCardWidth = cards[0].offsetWidth;
+            const newGap = 32;
+            track.style.transition = 'none';
+            track.style.transform = `translateX(-${(currentIndex + totalCards) * (newCardWidth + newGap)}px)`;
         });
     }
 
