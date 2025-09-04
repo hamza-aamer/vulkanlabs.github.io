@@ -1,34 +1,33 @@
-// Main application logic
+// Main application class
 class Portfolio {
     constructor() {
         this.isLoaded = false;
+        this.activeModal = null;
+        this.scrollObserver = null;
         this.init();
     }
 
     init() {
         this.setupEventListeners();
-        this.initializeComponents();
+        this.generateBarcode();
+        this.setupScrollAnimations();
+        this.setupSmoothScrolling();
+        this.setupContactForm();
+        this.loadProjects();
         this.handlePageLoad();
     }
 
     setupEventListeners() {
         // Window events
         window.addEventListener('load', () => this.handlePageLoad());
-        window.addEventListener('scroll', this.throttle(this.handleScroll.bind(this), 16));
-        window.addEventListener('resize', this.debounce(this.handleResize.bind(this), 250));
-
-        // Navigation events
+        window.addEventListener('scroll', this.throttle(() => this.handleScroll(), 16));
+        window.addEventListener('resize', this.debounce(() => this.handleResize(), 250));
+        
+        // Navigation
         this.setupNavigation();
-        this.setupMobileMenu();
         
-        // Form events
-        this.setupContactForm();
-        
-        // Theme toggle
-        this.setupThemeToggle();
-        
-        // Keyboard navigation
-        this.setupKeyboardNavigation();
+        // Theme and interactions
+        this.setupInteractions();
     }
 
     handlePageLoad() {
@@ -37,47 +36,134 @@ class Portfolio {
         this.isLoaded = true;
         document.body.classList.add('loaded');
         
-        // Initialize scroll animations after load
-        this.initializeScrollAnimations();
+        // Remove loading overlay if exists
+        const loadingOverlay = document.querySelector('.page-loading');
+        if (loadingOverlay) {
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+                setTimeout(() => loadingOverlay.remove(), 500);
+            }, 1000);
+        }
         
-        // Preload critical images
-        this.preloadImages();
+        // Initialize animations after load
+        this.triggerLoadAnimations();
+    }
+
+    triggerLoadAnimations() {
+        // Animate floating elements with delays
+        const floatElements = document.querySelectorAll('.float-element');
+        floatElements.forEach((element, index) => {
+            setTimeout(() => {
+                element.style.opacity = '1';
+                element.classList.add('animate-float');
+            }, 1000 + (index * 200));
+        });
+
+        // Animate badges with stagger
+        const badges = document.querySelectorAll('.badge');
+        badges.forEach((badge, index) => {
+            setTimeout(() => {
+                badge.style.opacity = '1';
+                badge.classList.add('animate-fadeInUp');
+            }, 1200 + (index * 150));
+        });
+    }
+
+    generateBarcode() {
+        const barcodeContainer = document.getElementById('barcode');
+        if (!barcodeContainer) return;
+
+        const name = 'HAMZAAAMER';
+        const barcodePattern = this.textToBarcode(name);
         
-        // Initialize performance monitoring
-        this.monitorPerformance();
+        barcodeContainer.innerHTML = '';
+        
+        barcodePattern.forEach((width, index) => {
+            const line = document.createElement('div');
+            line.className = 'barcode-line';
+            line.style.cssText = `
+                width: ${width}px;
+                height: ${Math.random() * 20 + 20}px;
+                background: var(--text-primary);
+                animation-delay: ${index * 0.05}s;
+            `;
+            barcodeContainer.appendChild(line);
+        });
+    }
+
+    textToBarcode(text) {
+        // Simple barcode pattern generator
+        const patterns = {
+            'A': [3, 1, 3, 1, 2], 'B': [1, 3, 3, 1, 2], 'C': [3, 3, 1, 1, 2],
+            'D': [1, 1, 3, 3, 2], 'E': [3, 1, 1, 3, 2], 'F': [1, 3, 1, 3, 2],
+            'G': [1, 1, 1, 5, 2], 'H': [3, 1, 1, 1, 4], 'I': [1, 3, 1, 1, 4],
+            'J': [1, 1, 3, 1, 4], 'K': [3, 1, 1, 1, 2], 'L': [1, 3, 1, 1, 2],
+            'M': [1, 1, 3, 1, 2], 'N': [3, 1, 1, 3, 1], 'O': [1, 3, 1, 3, 1],
+            'P': [1, 1, 3, 3, 1], 'Q': [3, 1, 3, 1, 1], 'R': [1, 3, 3, 1, 1],
+            'S': [1, 1, 1, 3, 3], 'T': [3, 1, 1, 1, 3], 'U': [1, 3, 1, 1, 3],
+            'V': [1, 1, 3, 1, 3], 'W': [3, 1, 1, 1, 1], 'X': [1, 3, 1, 1, 1],
+            'Y': [1, 1, 3, 1, 1], 'Z': [1, 1, 1, 3, 1]
+        };
+
+        let barcode = [];
+        for (let char of text) {
+            if (patterns[char]) {
+                barcode = barcode.concat(patterns[char]);
+            }
+        }
+        
+        return barcode.map(width => Math.max(2, width * 2));
+    }
+
+    setupScrollAnimations() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        this.scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                    
+                    // Handle staggered animations
+                    const children = entry.target.querySelectorAll('.stagger-animate');
+                    children.forEach((child, index) => {
+                        setTimeout(() => {
+                            child.classList.add('animate');
+                        }, index * 100);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        const animateElements = document.querySelectorAll(`
+            .scroll-animate, 
+            .scroll-animate-left, 
+            .scroll-animate-right, 
+            .scroll-animate-scale,
+            .edu-card,
+            .project-card,
+            .timeline-item,
+            .skill-tag
+        `);
+
+        animateElements.forEach(el => {
+            if (this.scrollObserver) {
+                this.scrollObserver.observe(el);
+            }
+        });
     }
 
     setupNavigation() {
         const navLinks = document.querySelectorAll('.nav-link');
         const sections = document.querySelectorAll('section[id]');
 
-        // Smooth scrolling for navigation links
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                this.scrollToSection(targetId);
-            });
-        });
-
-        // Update active nav link on scroll
+        // Active section highlighting
         if (sections.length > 0) {
             this.setupScrollSpy(navLinks, sections);
         }
-    }
-
-    scrollToSection(targetId) {
-        const target = document.getElementById(targetId);
-        if (!target) return;
-
-        const navbar = document.querySelector('.navbar');
-        const navbarHeight = navbar ? navbar.offsetHeight : 0;
-        const targetPosition = target.offsetTop - navbarHeight;
-
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
     }
 
     setupScrollSpy(navLinks, sections) {
@@ -100,48 +186,20 @@ class Portfolio {
         sections.forEach(section => observer.observe(section));
     }
 
-    setupMobileMenu() {
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        if (!hamburger || !navMenu) return;
-
-        hamburger.addEventListener('click', () => {
-            this.toggleMobileMenu();
-        });
-
-        // Close menu when clicking nav links
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                this.closeMobileMenu();
+    setupSmoothScrolling() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(anchor.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-                this.closeMobileMenu();
-            }
-        });
-    }
-
-    toggleMobileMenu() {
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
-        
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        document.body.classList.toggle('menu-open');
-    }
-
-    closeMobileMenu() {
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
-        
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-        document.body.classList.remove('menu-open');
     }
 
     setupContactForm() {
@@ -150,8 +208,13 @@ class Portfolio {
 
         const inputs = form.querySelectorAll('input, textarea');
         
-        // Add floating label effect
+        // Floating label effects
         inputs.forEach(input => {
+            // Check initial state
+            if (input.value.trim()) {
+                input.parentElement.classList.add('focused');
+            }
+
             input.addEventListener('focus', () => {
                 input.parentElement.classList.add('focused');
             });
@@ -162,125 +225,451 @@ class Portfolio {
                 }
             });
 
-            // Check if input has value on page load
-            if (input.value.trim()) {
-                input.parentElement.classList.add('focused');
-            }
+            input.addEventListener('input', () => {
+                this.validateField(input);
+            });
         });
 
         // Form submission
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            this.handleFormSubmission(form);
+            this.handleFormSubmit(form);
         });
     }
 
-    handleFormSubmission(form) {
-        const submitButton = form.querySelector('button[type="submit"]');
-        const originalText = submitButton.textContent;
-        const formData = new FormData(form);
+    validateField(field) {
+        const isValid = field.checkValidity() && field.value.trim();
+        const formGroup = field.parentElement;
 
-        // Validate form
-        if (!this.validateForm(form)) {
-            this.showNotification('Please fill in all required fields correctly.', 'error');
+        formGroup.classList.remove('error', 'success');
+        
+        if (field.value.trim()) {
+            if (isValid) {
+                formGroup.classList.add('success');
+            } else {
+                formGroup.classList.add('error');
+                // Add shake animation
+                field.classList.add('animate-wiggle');
+                setTimeout(() => field.classList.remove('animate-wiggle'), 800);
+            }
+        }
+    }
+
+    handleFormSubmit(form) {
+        const submitBtn = form.querySelector('.submit-btn');
+        const btnText = submitBtn.querySelector('.btn-text');
+        
+        // Validate all fields
+        const inputs = form.querySelectorAll('input[required], textarea[required]');
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!this.validateField(input) || !input.value.trim()) {
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            this.showNotification('Please fill in all fields correctly', 'error');
             return;
         }
 
         // Show loading state
-        submitButton.classList.add('loading');
-        submitButton.disabled = true;
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
 
-        // Simulate form submission (replace with actual API call)
-        this.simulateFormSubmission(formData)
-            .then(() => {
-                this.showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-                form.reset();
-                
-                // Remove focused classes
-                form.querySelectorAll('.form-group').forEach(group => {
-                    group.classList.remove('focused', 'error', 'success');
-                });
-            })
-            .catch(() => {
-                this.showNotification('Failed to send message. Please try again later.', 'error');
-            })
-            .finally(() => {
-                submitButton.classList.remove('loading');
-                submitButton.disabled = false;
+        // Simulate form submission
+        setTimeout(() => {
+            this.showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+            form.reset();
+            
+            // Remove all focused states
+            inputs.forEach(input => {
+                input.parentElement.classList.remove('focused', 'error', 'success');
             });
+
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+
+            // Success animation
+            submitBtn.classList.add('animate-pulse');
+            setTimeout(() => submitBtn.classList.remove('animate-pulse'), 600);
+        }, 2000);
     }
 
-    validateForm(form) {
-        const inputs = form.querySelectorAll('input[required], textarea[required]');
-        let isValid = true;
+    loadProjects() {
+        const projectsGrid = document.getElementById('projectsGrid');
+        if (!projectsGrid || typeof projects === 'undefined') return;
 
-        inputs.forEach(input => {
-            const formGroup = input.parentElement;
-            formGroup.classList.remove('error', 'success');
+        const featuredProjects = projects.filter(p => p.featured).slice(0, 3);
+        
+        projectsGrid.innerHTML = '';
+        
+        featuredProjects.forEach((project, index) => {
+            const projectCard = this.createProjectCard(project, index);
+            projectsGrid.appendChild(projectCard);
+        });
+    }
 
-            if (!input.value.trim()) {
-                formGroup.classList.add('error');
-                isValid = false;
-            } else if (input.type === 'email' && !this.isValidEmail(input.value)) {
-                formGroup.classList.add('error');
-                isValid = false;
-            } else {
-                formGroup.classList.add('success');
+    createProjectCard(project, index) {
+        const card = document.createElement('div');
+        card.className = `project-card hover-lift scroll-animate stagger-${index + 1}`;
+        card.style.opacity = '0';
+        
+        const placeholder = `
+            <div style="
+                width: 100%; 
+                height: 100%; 
+                background: linear-gradient(135deg, var(--cream-4) 0%, var(--cream-5) 100%); 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                font-size: 1.5rem; 
+                font-weight: 700;
+                color: var(--text-primary);
+                text-align: center;
+                padding: 2rem;
+            ">
+                ${project.title.split(':')[0]}
+            </div>
+        `;
+        
+        card.innerHTML = `
+            <div class="project-image">
+                ${placeholder}
+            </div>
+            <div class="project-content">
+                <h3 class="project-title">${project.title}</h3>
+                <p class="project-description">${project.description}</p>
+                <div class="project-tech">
+                    ${project.technologies.slice(0, 4).map(tech => 
+                        `<span class="tech-tag">${tech}</span>`
+                    ).join('')}
+                    ${project.technologies.length > 4 ? 
+                        `<span class="tech-tag">+${project.technologies.length - 4} more</span>` : ''}
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', () => {
+            this.openProjectModal(project);
+            card.classList.add('animate-pulse');
+            setTimeout(() => card.classList.remove('animate-pulse'), 600);
+        });
+
+        return card;
+    }
+
+    openProjectModal(project) {
+        const modal = document.getElementById('projectModal');
+        const modalBody = document.getElementById('modalBody');
+        
+        modalBody.innerHTML = `
+            <div class="project-modal-content">
+                <div class="project-header">
+                    <h2>${project.title}</h2>
+                    <p class="project-subtitle">${project.subtitle || ''}</p>
+                </div>
+                
+                <div class="project-image-large">
+                    <div style="
+                        width: 100%; 
+                        height: 300px; 
+                        background: linear-gradient(135deg, var(--cream-4) 0%, var(--cream-5) 100%); 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        font-size: 2rem; 
+                        font-weight: 700;
+                        color: var(--text-primary);
+                        border-radius: var(--border-radius);
+                        margin: var(--space-lg) 0;
+                    ">
+                        ${project.title.split(':')[0]}
+                    </div>
+                </div>
+                
+                <div class="project-details">
+                    <div class="project-description-full">
+                        <p>${project.description}</p>
+                    </div>
+                    
+                    <div class="project-achievements">
+                        <h4>Key Achievements</h4>
+                        <ul>
+                            ${project.achievements.map(achievement => `<li>${achievement}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="project-technologies">
+                        <h4>Technologies Used</h4>
+                        <div class="tech-list">
+                            ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    ${project.metrics ? `
+                        <div class="project-metrics">
+                            <h4>Key Metrics</h4>
+                            <div class="metrics-grid">
+                                ${Object.entries(project.metrics).map(([key, value]) => `
+                                    <div class="metric">
+                                        <span class="metric-value">${value}</span>
+                                        <span class="metric-label">${key}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+
+        // Add modal styles
+        this.addModalStyles();
+        
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        this.activeModal = modal;
+    }
+
+    addModalStyles() {
+        if (document.getElementById('modal-styles')) return;
+        
+        const styles = `
+            <style id="modal-styles">
+                .project-modal-content {
+                    padding: var(--space-lg);
+                }
+                
+                .project-header h2 {
+                    font-size: 2rem;
+                    margin-bottom: var(--space-sm);
+                    color: var(--text-primary);
+                }
+                
+                .project-subtitle {
+                    color: var(--accent);
+                    font-weight: 600;
+                    margin-bottom: var(--space-lg);
+                }
+                
+                .project-achievements,
+                .project-technologies,
+                .project-metrics {
+                    margin: var(--space-xl) 0;
+                }
+                
+                .project-achievements h4,
+                .project-technologies h4,
+                .project-metrics h4 {
+                    color: var(--text-primary);
+                    margin-bottom: var(--space-md);
+                    font-size: 1.2rem;
+                    padding-bottom: var(--space-sm);
+                    border-bottom: 2px solid var(--cream-4);
+                }
+                
+                .project-achievements ul {
+                    list-style: none;
+                    padding: 0;
+                }
+                
+                .project-achievements li {
+                    padding: var(--space-sm) 0;
+                    padding-left: var(--space-lg);
+                    position: relative;
+                    color: var(--text-secondary);
+                }
+                
+                .project-achievements li::before {
+                    content: '✓';
+                    position: absolute;
+                    left: 0;
+                    color: var(--accent);
+                    font-weight: bold;
+                }
+                
+                .tech-list {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: var(--space-sm);
+                }
+                
+                .metrics-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    gap: var(--space-md);
+                }
+                
+                .metric {
+                    text-align: center;
+                    padding: var(--space-md);
+                    background: var(--cream-3);
+                    border-radius: var(--border-radius);
+                }
+                
+                .metric-value {
+                    display: block;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    color: var(--accent);
+                    margin-bottom: var(--space-xs);
+                }
+                
+                .metric-label {
+                    color: var(--text-light);
+                    font-size: 0.9rem;
+                    text-transform: uppercase;
+                }
+            </style>
+        `;
+        
+        document.head.insertAdjacentHTML('beforeend', styles);
+    }
+
+    closeModal() {
+        if (this.activeModal) {
+            this.activeModal.classList.remove('show');
+            setTimeout(() => {
+                this.activeModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                this.activeModal = null;
+            }, 300);
+        }
+    }
+
+    setupInteractions() {
+        // Modal close handlers
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.activeModal) {
+                this.closeModal();
             }
         });
 
-        return isValid;
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                this.closeModal();
+            }
+            if (e.target.classList.contains('modal-close')) {
+                this.closeModal();
+            }
+        });
+
+        // Add click effects to interactive elements
+        document.querySelectorAll('.badge, .skill-tag, .social-link').forEach(element => {
+            element.addEventListener('click', function() {
+                this.classList.add('animate-pulse');
+                setTimeout(() => this.classList.remove('animate-pulse'), 600);
+            });
+        });
+
+        // Add hover effects to floating elements
+        document.querySelectorAll('.float-element').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.style.animationPlayState = 'paused';
+                this.classList.add('animate-wiggle');
+            });
+            
+            element.addEventListener('mouseleave', function() {
+                this.style.animationPlayState = 'running';
+                setTimeout(() => this.classList.remove('animate-wiggle'), 800);
+            });
+        });
     }
 
-    isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    handleScroll() {
+        const scrollTop = window.pageYOffset;
+        
+        // Parallax effect for hero background
+        const hero = document.querySelector('.hero');
+        if (hero) {
+            hero.style.transform = `translateY(${scrollTop * 0.1}px)`;
+        }
+        
+        // Update navbar appearance
+        const nav = document.querySelector('.nav');
+        if (nav) {
+            if (scrollTop > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        }
     }
 
-    simulateFormSubmission(formData) {
-        return new Promise((resolve, reject) => {
-            // Simulate API delay
-            setTimeout(() => {
-                // Simulate 90% success rate
-                if (Math.random() > 0.1) {
-                    resolve();
-                } else {
-                    reject();
-                }
-            }, 2000);
+    handleResize() {
+        // Recalculate animations and layouts if needed
+        if (window.innerWidth < 768) {
+            this.handleMobileLayout();
+        } else {
+            this.handleDesktopLayout();
+        }
+    }
+
+    handleMobileLayout() {
+        // Mobile-specific adjustments
+        const floatElements = document.querySelectorAll('.float-element');
+        floatElements.forEach(element => {
+            element.style.display = 'none';
+        });
+    }
+
+    handleDesktopLayout() {
+        // Desktop-specific adjustments
+        const floatElements = document.querySelectorAll('.float-element');
+        floatElements.forEach(element => {
+            element.style.display = 'block';
         });
     }
 
     showNotification(message, type = 'info') {
         // Remove existing notifications
-        const existingNotification = document.querySelector('.notification');
-        if (existingNotification) {
-            existingNotification.remove();
-        }
+        const existing = document.querySelector('.notification');
+        if (existing) existing.remove();
 
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
+        
+        const icons = {
+            success: '✓',
+            error: '✕',
+            info: 'ℹ',
+            warning: '⚠'
+        };
+
         notification.innerHTML = `
             <div class="notification-content">
-                <i class="fas ${this.getNotificationIcon(type)}"></i>
-                <span>${message}</span>
-                <button class="notification-close">&times;</button>
+                <span class="notification-icon">${icons[type] || icons.info}</span>
+                <span class="notification-message">${message}</span>
+                <button class="notification-close">×</button>
             </div>
         `;
 
-        // Add notification styles
+        const colors = {
+            success: '#10b981',
+            error: '#ef4444', 
+            info: '#3b82f6',
+            warning: '#f59e0b'
+        };
+
         Object.assign(notification.style, {
             position: 'fixed',
             top: '20px',
             right: '20px',
             zIndex: '9999',
-            background: type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6',
+            background: colors[type] || colors.info,
             color: 'white',
             padding: '16px 20px',
-            borderRadius: '8px',
-            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+            borderRadius: 'var(--border-radius)',
+            boxShadow: 'var(--shadow-medium)',
             transform: 'translateX(100%)',
-            transition: 'transform 0.3s ease'
+            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            minWidth: '300px'
         });
 
         document.body.appendChild(notification);
@@ -290,25 +679,15 @@ class Portfolio {
             notification.style.transform = 'translateX(0)';
         });
 
-        // Auto remove after 5 seconds
+        // Auto remove
         setTimeout(() => {
             this.removeNotification(notification);
         }, 5000);
 
         // Close button
-        const closeButton = notification.querySelector('.notification-close');
-        closeButton.addEventListener('click', () => {
+        notification.querySelector('.notification-close').addEventListener('click', () => {
             this.removeNotification(notification);
         });
-    }
-
-    getNotificationIcon(type) {
-        switch (type) {
-            case 'success': return 'fa-check-circle';
-            case 'error': return 'fa-exclamation-circle';
-            case 'warning': return 'fa-exclamation-triangle';
-            default: return 'fa-info-circle';
-        }
     }
 
     removeNotification(notification) {
@@ -318,225 +697,6 @@ class Portfolio {
                 notification.parentNode.removeChild(notification);
             }
         }, 300);
-    }
-
-    setupThemeToggle() {
-        const themeToggle = document.getElementById('themeToggle');
-        if (!themeToggle) return;
-
-        const html = document.documentElement;
-        const icon = themeToggle.querySelector('i');
-        
-        // Check for saved theme or system preference
-        const savedTheme = localStorage.getItem('theme');
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        const currentTheme = savedTheme || systemTheme;
-        
-        html.setAttribute('data-theme', currentTheme);
-        this.updateThemeIcon(icon, currentTheme);
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            this.updateThemeIcon(icon, newTheme);
-            
-            // Add animation
-            themeToggle.style.transform = 'rotate(180deg)';
-            setTimeout(() => {
-                themeToggle.style.transform = '';
-            }, 300);
-        });
-
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            if (!localStorage.getItem('theme')) {
-                const newTheme = e.matches ? 'dark' : 'light';
-                html.setAttribute('data-theme', newTheme);
-                this.updateThemeIcon(icon, newTheme);
-            }
-        });
-    }
-
-    updateThemeIcon(icon, theme) {
-        icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
-    }
-
-    setupKeyboardNavigation() {
-        document.addEventListener('keydown', (e) => {
-            // Escape key - close modals/menus
-            if (e.key === 'Escape') {
-                this.closeMobileMenu();
-                if (window.closeProjectModal) {
-                    window.closeProjectModal();
-                }
-            }
-
-            // Tab navigation enhancement
-            if (e.key === 'Tab') {
-                document.body.classList.add('keyboard-navigation');
-            }
-        });
-
-        // Remove keyboard navigation class on mouse interaction
-        document.addEventListener('mousedown', () => {
-            document.body.classList.remove('keyboard-navigation');
-        });
-    }
-
-    handleScroll() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Update CSS custom property for scroll-based animations
-        document.documentElement.style.setProperty('--scroll-y', scrollTop + 'px');
-        
-        // Navbar scroll effect
-        this.updateNavbarOnScroll(scrollTop);
-        
-        // Back to top button
-        this.updateBackToTopButton(scrollTop);
-    }
-
-    updateNavbarOnScroll(scrollTop) {
-        const navbar = document.querySelector('.navbar');
-        if (!navbar) return;
-
-        if (scrollTop > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-
-        // Hide/show navbar on scroll
-        if (scrollTop > this.lastScrollTop && scrollTop > 100) {
-            navbar.style.transform = 'translateY(-100%)';
-        } else {
-            navbar.style.transform = 'translateY(0)';
-        }
-
-        this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    }
-
-    updateBackToTopButton(scrollTop) {
-        let backToTop = document.getElementById('backToTop');
-        
-        if (!backToTop) {
-            backToTop = this.createBackToTopButton();
-        }
-
-        if (scrollTop > 500) {
-            backToTop.classList.add('visible');
-        } else {
-            backToTop.classList.remove('visible');
-        }
-    }
-
-    createBackToTopButton() {
-        const button = document.createElement('button');
-        button.id = 'backToTop';
-        button.innerHTML = '<i class="fas fa-arrow-up"></i>';
-        button.setAttribute('aria-label', 'Back to top');
-        
-        Object.assign(button.style, {
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            background: 'var(--gradient-primary)',
-            border: 'none',
-            color: 'white',
-            fontSize: '18px',
-            cursor: 'pointer',
-            zIndex: '1000',
-            opacity: '0',
-            transform: 'translateY(20px)',
-            transition: 'all 0.3s ease',
-            boxShadow: 'var(--shadow-medium)'
-        });
-
-        button.className = 'back-to-top hover-lift';
-        
-        button.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        document.body.appendChild(button);
-        return button;
-    }
-
-    handleResize() {
-        // Update mobile menu state
-        if (window.innerWidth > 768) {
-            this.closeMobileMenu();
-        }
-
-        // Recalculate animations if needed
-        this.recalculateAnimations();
-    }
-
-    initializeScrollAnimations() {
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        // Observe all elements with scroll-animate class
-        document.querySelectorAll('.scroll-animate').forEach(el => {
-            observer.observe(el);
-        });
-    }
-
-    preloadImages() {
-        const criticalImages = [
-            'assets/images/profile.jpg'
-        ];
-
-        criticalImages.forEach(src => {
-            const img = new Image();
-            img.src = src;
-        });
-    }
-
-    monitorPerformance() {
-        if (!('performance' in window)) return;
-
-        window.addEventListener('load', () => {
-            const perfData = performance.timing;
-            const loadTime = perfData.loadEventEnd - perfData.navigationStart;
-            
-            // Log performance metrics
-            console.log('Performance metrics:', {
-                loadTime: loadTime + 'ms',
-                domReady: (perfData.domContentLoadedEventEnd - perfData.navigationStart) + 'ms',
-                firstPaint: performance.getEntriesByType('paint')[0]?.startTime + 'ms'
-            });
-
-            // Warn about slow load times
-            if (loadTime > 3000) {
-                console.warn('Slow page load detected:', loadTime + 'ms');
-            }
-        });
-    }
-
-    recalculateAnimations() {
-        // Recalculate particle positions or other dynamic elements
-        // This would be called on resize if needed
     }
 
     // Utility functions
@@ -556,7 +716,8 @@ class Portfolio {
     debounce(func, wait, immediate) {
         let timeout;
         return function() {
-            const context = this, args = arguments;
+            const context = this;
+            const args = arguments;
             const later = function() {
                 timeout = null;
                 if (!immediate) func.apply(context, args);
@@ -570,67 +731,93 @@ class Portfolio {
 
     // Cleanup method
     destroy() {
-        // Clean up event listeners and observers
+        if (this.scrollObserver) {
+            this.scrollObserver.disconnect();
+        }
         window.removeEventListener('scroll', this.handleScroll);
         window.removeEventListener('resize', this.handleResize);
     }
 }
 
-// Initialize portfolio when DOM is loaded
+// Global function for modal close (called from HTML)
+function closeModal() {
+    if (window.portfolioApp) {
+        window.portfolioApp.closeModal();
+    }
+}
+
+// Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-    window.portfolio = new Portfolio();
+    window.portfolioApp = new Portfolio();
 });
 
-// Handle page visibility changes for performance
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-        // Pause heavy animations when page is hidden
-        document.body.classList.add('page-hidden');
-    } else {
-        // Resume animations when page becomes visible
-        document.body.classList.remove('page-hidden');
+// Add some delightful easter eggs
+document.addEventListener('keydown', (e) => {
+    // Konami code easter egg
+    const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    if (!window.konamiSequence) window.konamiSequence = [];
+    
+    window.konamiSequence.push(e.keyCode);
+    window.konamiSequence = window.konamiSequence.slice(-konamiCode.length);
+    
+    if (window.konamiSequence.join(',') === konamiCode.join(',')) {
+        // Easter egg triggered!
+        document.body.classList.add('konami-activated');
+        
+        // Add rainbow animation to the name
+        const nameParts = document.querySelectorAll('.name-part');
+        nameParts.forEach(part => {
+            part.classList.add('gradient-text');
+        });
+        
+        // Show fun notification
+        if (window.portfolioApp) {
+            window.portfolioApp.showNotification('🎉 You found the easter egg! Welcome to the matrix!', 'success');
+        }
+        
+        setTimeout(() => {
+            document.body.classList.remove('konami-activated');
+            nameParts.forEach(part => {
+                part.classList.remove('gradient-text');
+            });
+        }, 5000);
+        
+        window.konamiSequence = [];
     }
 });
 
-// Add additional CSS for back-to-top button
-const backToTopStyles = `
-    .back-to-top.visible {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-    }
-    
-    .back-to-top:hover {
-        transform: translateY(-4px) !important;
-        box-shadow: var(--shadow-large) !important;
-    }
-    
-    .keyboard-navigation *:focus {
-        outline: 2px solid var(--primary-color) !important;
-        outline-offset: 2px !important;
-    }
-    
-    .page-hidden * {
-        animation-play-state: paused !important;
-    }
-    
-    .notification-content {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .notification-close {
-        background: none;
-        border: none;
-        color: inherit;
-        font-size: 20px;
-        cursor: pointer;
-        padding: 0;
-        margin-left: auto;
-    }
+// Add konami easter egg styles
+const konamiStyles = `
+    <style>
+        .konami-activated {
+            animation: rainbow-bg 2s ease-in-out infinite;
+        }
+        
+        @keyframes rainbow-bg {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0 4px;
+        }
+        
+        .notification-icon {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
 `;
 
-// Add styles to document
-const styleSheet = document.createElement('style');
-styleSheet.textContent = backToTopStyles;
-document.head.appendChild(styleSheet);
+document.head.insertAdjacentHTML('beforeend', konamiStyles);
