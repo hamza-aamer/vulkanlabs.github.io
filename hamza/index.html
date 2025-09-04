@@ -153,7 +153,7 @@
         </div>
     </section>
 
-    <!-- Work Section -->
+    <!-- Work Section with Custom Project Visuals -->
     <section id="work" class="work">
         <div class="container">
             <h2 class="section-title">
@@ -161,10 +161,227 @@
                 <div class="title-underline"></div>
             </h2>
             
-            <div class="projects-grid" id="projectsGrid">
-                <!-- Projects will be loaded by JavaScript -->
+            <!-- Project 1: Ascend v2 -->
+            <div class="project-showcase" id="project-ascend">
+                <div class="project-content">
+                    <div class="project-info">
+                        <div class="project-badge">Data Engineering</div>
+                        <h3 class="project-title">Ascend v2: Enterprise Framework</h3>
+                        <p class="project-subtitle">Proprietary DNA Signature Technology</p>
+                        <p class="project-description">
+                            Revolutionary data engineering framework featuring proprietary DNA signature extraction 
+                            that captures statistical properties of datasets with 99.5% fidelity while processing 
+                            10M+ rows efficiently.
+                        </p>
+                        <div class="project-metrics-inline">
+                            <div class="metric-item">
+                                <span class="metric-number">99.5%</span>
+                                <span class="metric-label">Fidelity</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-number">10x</span>
+                                <span class="metric-label">Performance</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-number">10M+</span>
+                                <span class="metric-label">Rows</span>
+                            </div>
+                        </div>
+                        <div class="project-tech-stack">
+                            <span class="tech-pill">Python</span>
+                            <span class="tech-pill">PySpark</span>
+                            <span class="tech-pill">PostgreSQL</span>
+                            <span class="tech-pill">Apache Spark</span>
+                        </div>
+                    </div>
+                    <div class="project-visual">
+                        <div class="ascend-diagram">
+                            <div class="data-flow">
+                                <div class="flow-step input-data">
+                                    <div class="step-icon">📊</div>
+                                    <div class="step-label">Raw Data</div>
+                                    <div class="step-detail">PostgreSQL, MySQL, CSV</div>
+                                </div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-step dna-engine">
+                                    <div class="step-icon">🧬</div>
+                                    <div class="step-label">DNA Engine</div>
+                                    <div class="step-detail">Statistical Extraction</div>
+                                </div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-step processing">
+                                    <div class="step-icon">⚡</div>
+                                    <div class="step-label">Processing</div>
+                                    <div class="step-detail">13+ Modules</div>
+                                </div>
+                                <div class="flow-arrow">→</div>
+                                <div class="flow-step output">
+                                    <div class="step-icon">🎯</div>
+                                    <div class="step-label">Synthetic Data</div>
+                                    <div class="step-detail">99.5% Fidelity</div>
+                                </div>
+                            </div>
+                            <div class="performance-indicator">
+                                <div class="perf-bar">
+                                    <div class="perf-fill" data-width="95"></div>
+                                </div>
+                                <span class="perf-label">System Performance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2: Artisan Roofing -->
+            <div class="project-showcase" id="project-artisan">
+                <div class="project-content reverse">
+                    <div class="project-visual">
+                        <div class="artisan-diagram">
+                            <div class="roof-analysis">
+                                <div class="aerial-view">
+                                    <div class="roof-outline">
+                                        <div class="roof-section ridge" data-tooltip="Ridge Line - Detected"></div>
+                                        <div class="roof-section hip" data-tooltip="Hip Line - 95% Accuracy"></div>
+                                        <div class="roof-section valley" data-tooltip="Valley Detection"></div>
+                                        <div class="roof-section rake" data-tooltip="Rake Line Analysis"></div>
+                                    </div>
+                                    <div class="detection-points">
+                                        <div class="point active" style="top: 20%; left: 30%;"></div>
+                                        <div class="point active" style="top: 40%; left: 60%;"></div>
+                                        <div class="point active" style="top: 70%; left: 40%;"></div>
+                                    </div>
+                                </div>
+                                <div class="analysis-pipeline">
+                                    <div class="pipeline-step">
+                                        <span class="step-number">1</span>
+                                        <span class="step-name">YOLOv8 Detection</span>
+                                    </div>
+                                    <div class="pipeline-step">
+                                        <span class="step-number">2</span>
+                                        <span class="step-name">LiDAR Processing</span>
+                                    </div>
+                                    <div class="pipeline-step">
+                                        <span class="step-number">3</span>
+                                        <span class="step-name">3D Reconstruction</span>
+                                    </div>
+                                    <div class="pipeline-step">
+                                        <span class="step-number">4</span>
+                                        <span class="step-name">Precise Measurement</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-badge">Computer Vision</div>
+                        <h3 class="project-title">Artisan Roofing: AI Analysis</h3>
+                        <p class="project-subtitle">Aerial Imagery & 3D Reconstruction</p>
+                        <p class="project-description">
+                            Professional roof measurement system integrating satellite imagery with LiDAR processing. 
+                            Automatically classifies roof components with 95% accuracy and ±2% tolerance in under 60 seconds.
+                        </p>
+                        <div class="project-metrics-inline">
+                            <div class="metric-item">
+                                <span class="metric-number">95%</span>
+                                <span class="metric-label">Accuracy</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-number">±2%</span>
+                                <span class="metric-label">Tolerance</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-number">&lt;60s</span>
+                                <span class="metric-label">Processing</span>
+                            </div>
+                        </div>
+                        <div class="project-tech-stack">
+                            <span class="tech-pill">YOLOv8</span>
+                            <span class="tech-pill">Open3D</span>
+                            <span class="tech-pill">Computer Vision</span>
+                            <span class="tech-pill">QGIS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3: Ant-AI -->
+            <div class="project-showcase" id="project-antai">
+                <div class="project-content">
+                    <div class="project-info">
+                        <div class="project-badge">Multi-Agent AI</div>
+                        <h3 class="project-title">Ant-AI: Prompt Optimization</h3>
+                        <p class="project-subtitle">Genetic Algorithms & Agent Orchestration</p>
+                        <p class="project-description">
+                            First genetic multi-agent framework for autonomous prompt optimization. Uses evolutionary 
+                            algorithms and Tree of Thoughts reasoning to reduce prompt ambiguity by 70% with full automation.
+                        </p>
+                        <div class="project-metrics-inline">
+                            <div class="metric-item">
+                                <span class="metric-number">70%</span>
+                                <span class="metric-label">Less Ambiguity</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-number">100%</span>
+                                <span class="metric-label">Automation</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-number">Dynamic</span>
+                                <span class="metric-label">Scaling</span>
+                            </div>
+                        </div>
+                        <div class="project-tech-stack">
+                            <span class="tech-pill">CrewAI</span>
+                            <span class="tech-pill">Genetic Algorithms</span>
+                            <span class="tech-pill">LangChain</span>
+                            <span class="tech-pill">Streamlit</span>
+                        </div>
+                    </div>
+                    <div class="project-visual">
+                        <div class="antai-diagram">
+                            <div class="agent-network">
+                                <div class="central-orchestrator">
+                                    <div class="orchestrator-core">
+                                        <span class="core-label">CrewAI</span>
+                                        <span class="core-sublabel">Orchestrator</span>
+                                    </div>
+                                </div>
+                                <div class="agent synthesis-agent">
+                                    <div class="agent-icon">🧠</div>
+                                    <div class="agent-label">Synthesis</div>
+                                </div>
+                                <div class="agent qa-agent">
+                                    <div class="agent-icon">✓</div>
+                                    <div class="agent-label">QA</div>
+                                </div>
+                                <div class="agent mutation-agent">
+                                    <div class="agent-icon">🧬</div>
+                                    <div class="agent-label">Mutation</div>
+                                </div>
+                                <div class="agent crossover-agent">
+                                    <div class="agent-icon">⚡</div>
+                                    <div class="agent-label">Crossover</div>
+                                </div>
+                                <!-- Connection lines -->
+                                <svg class="connection-lines" viewBox="0 0 300 300">
+                                    <line x1="150" y1="150" x2="75" y2="75" class="connection-line"></line>
+                                    <line x1="150" y1="150" x2="225" y2="75" class="connection-line"></line>
+                                    <line x1="150" y1="150" x2="75" y2="225" class="connection-line"></line>
+                                    <line x1="150" y1="150" x2="225" y2="225" class="connection-line"></line>
+                                </svg>
+                            </div>
+                            <div class="optimization-progress">
+                                <div class="progress-label">Optimization Progress</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill genetic" data-width="70"></div>
+                                </div>
+                                <div class="progress-stats">70% Ambiguity Reduction</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
+            <!-- Experience Section -->
             <div class="experience-section">
                 <h3 class="experience-title">Professional Experience</h3>
                 <div class="timeline">
@@ -317,17 +534,6 @@
         </div>
     </footer>
 
-    <!-- Project Modal -->
-    <div class="modal-overlay" id="projectModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">×</button>
-            <div class="modal-body" id="modalBody">
-                <!-- Content loaded by JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <script src="assets/js/projects.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>
