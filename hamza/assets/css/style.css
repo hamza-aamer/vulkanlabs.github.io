@@ -1060,3 +1060,43 @@ p {
        padding: var(--space-lg);
    }
 }
+
+/* Updated Navigation Styling */
+.brand-link {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--cream-3);
+    border-radius: 25px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-link:hover {
+    background: var(--cream-4);
+    transform: translateY(-2px);
+}
+
+/* Remove barcode text */
+.barcode-text {
+    display: none;
+}
+
+/* Make barcode wider and more prominent */
+.barcode {
+    display: flex;
+    gap: 1px;
+    margin-bottom: var(--space-lg);
+    height: 50px;
+    align-items: end;
+    justify-content: flex-start;
+    min-width: 400px;
+}
+
+@media (max-width: 768px) {
+    .barcode {
+        min-width: 280px;
+        justify-content: center;
+    }
+}
