@@ -9,6 +9,7 @@ class Portfolio {
         this.setupScrollEffects();
         this.setupInteractions();
         this.setupCarousel();
+        this.setupMobileAffiliationsCarousel();
         this.handlePageLoad();
     }
 
@@ -356,6 +357,23 @@ class Portfolio {
             setTimeout(() => notification.remove(), 300);
         }, 3000);
     }
+
+    setupMobileAffiliationsCarousel() {
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
+    
+    const affiliationsRow = document.querySelector('.affiliations-row');
+    if (!affiliationsRow) return;
+    
+    // Get original items
+    const originalItems = Array.from(affiliationsRow.children);
+    
+    // Create exactly 2 sets for seamless loop
+    originalItems.forEach(item => {
+        const clone = item.cloneNode(true);
+        affiliationsRow.appendChild(clone);
+    });
+}
 }
 
 document.addEventListener('DOMContentLoaded', () => {
