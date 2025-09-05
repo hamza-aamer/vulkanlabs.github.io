@@ -142,15 +142,121 @@ class Portfolio {
         const track = document.getElementById('projectsTrack');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const container = document.querySelector('.projects-container');
         
-        if (!track || !prevBtn || !nextBtn) return;
+        if (!track || !prevBtn || !nextBtn || !container) return;
 
         const cards = track.querySelectorAll('.project-card');
         const totalCards = cards.length;
         let currentIndex = 0;
         let isTransitioning = false;
+        const isMobile = window.innerWidth <= 768;
 
-        // Clone cards for infinite loop
+        // Mobile: Simple scroll behavior with auto-scroll
+        if (isMobile) {
+            // Remove clones for mobile and duplicate cards for infinite scroll
+            track.innerHTML = '';
+            const originalCards = Array.from(cards);
+            
+            // Add cards multiple times for infinite effect
+            for (let i = 0; i < 3; i++) {
+                originalCards.forEach(card => {
+                    const clone = card.cloneNode(true);
+                    track.appendChild(clone);
+                });
+            }
+            
+            let autoScrollSpeed = 1; // pixels per frame
+            let isUserInteracting = false;
+            let autoScrollRAF;
+            
+            // Auto-scroll function
+            const autoScroll = () => {
+                if (!isUserInteracting) {
+                    container.scrollLeft += autoScrollSpeed;
+                    
+                    // Reset scroll position for infinite loop
+                    const maxScroll = container.scrollWidth - container.clientWidth;
+                    if (container.scrollLeft >= maxScroll * 0.66) {
+                        container.scrollLeft = maxScroll * 0.33;
+                    }
+                }
+                autoScrollRAF = requestAnimationFrame(autoScroll);
+            };
+            
+            // Start auto-scroll
+            autoScroll();
+            
+            // Pause auto-scroll on user interaction
+            const pauseAutoScroll = () => {
+                isUserInteracting = true;
+                setTimeout(() => {
+                    isUserInteracting = false;
+                }, 3000); // Resume after 3 seconds of inactivity
+            };
+            
+            // Touch/swipe support with auto-scroll pause
+            let startX = 0;
+            let scrollLeft = 0;
+            let isDown = false;
+
+            container.addEventListener('touchstart', (e) => {
+                isDown = true;
+                pauseAutoScroll();
+                startX = e.touches[0].pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
+
+            container.addEventListener('touchmove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.touches[0].pageX - container.offsetLeft;
+                const walk = (x - startX) * 2;
+                container.scrollLeft = scrollLeft - walk;
+            });
+
+            container.addEventListener('touchend', () => {
+                isDown = false;
+            });
+
+            // Mouse drag support for desktop testing
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                pauseAutoScroll();
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+                container.style.cursor = 'grabbing';
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isDown = false;
+                container.style.cursor = 'grab';
+            });
+
+            container.addEventListener('mouseup', () => {
+                isDown = false;
+                container.style.cursor = 'grab';
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 2;
+                container.scrollLeft = scrollLeft - walk;
+            });
+            
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', () => {
+                if (autoScrollRAF) {
+                    cancelAnimationFrame(autoScrollRAF);
+                }
+            });
+
+            return;
+        }
+
+        // Desktop: Keep existing carousel behavior
         const cloneCards = () => {
             cards.forEach(card => {
                 const clone = card.cloneNode(true);
@@ -158,7 +264,6 @@ class Portfolio {
             });
         };
 
-        // Initialize with clones
         cloneCards();
 
         const updateCarousel = (direction = 'next') => {
@@ -166,7 +271,7 @@ class Portfolio {
             isTransitioning = true;
 
             const cardWidth = cards[0].offsetWidth;
-            const gap = 32; // var(--space-lg) = 2rem = 32px
+            const gap = 32;
             const moveDistance = cardWidth + gap;
 
             if (direction === 'next') {
@@ -179,7 +284,6 @@ class Portfolio {
                 track.style.transform = `translateX(-${(currentIndex + totalCards) * moveDistance}px)`;
             }
 
-            // Reset position after transition for infinite loop
             setTimeout(() => {
                 track.style.transition = 'none';
                 track.style.transform = `translateX(-${(currentIndex + totalCards) * moveDistance}px)`;
@@ -190,17 +294,23 @@ class Portfolio {
         prevBtn.addEventListener('click', () => updateCarousel('prev'));
         nextBtn.addEventListener('click', () => updateCarousel('next'));
 
-        // Initialize position
         const cardWidth = cards[0].offsetWidth;
         const gap = 32;
         track.style.transform = `translateX(-${totalCards * (cardWidth + gap)}px)`;
 
-        // Handle window resize
         window.addEventListener('resize', () => {
-            const newCardWidth = cards[0].offsetWidth;
-            const newGap = 32;
-            track.style.transition = 'none';
-            track.style.transform = `translateX(-${(currentIndex + totalCards) * (newCardWidth + newGap)}px)`;
+            const newIsMobile = window.innerWidth <= 768;
+            if (newIsMobile !== isMobile) {
+                location.reload(); // Reload on mobile/desktop switch
+                return;
+            }
+            
+            if (!newIsMobile) {
+                const newCardWidth = cards[0].offsetWidth;
+                const newGap = 32;
+                track.style.transition = 'none';
+                track.style.transform = `translateX(-${(currentIndex + totalCards) * (newCardWidth + newGap)}px)`;
+            }
         });
     }
 
