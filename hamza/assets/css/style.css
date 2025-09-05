@@ -443,8 +443,8 @@ p {
    }
    
    .affiliation-logo {
-       width: 70px;
-       height: 50px;
+       width: 80px;
+       height: 55px;
    }
    
    .affiliation-name {
@@ -461,13 +461,13 @@ p {
    
    .mobile-resume-container {
        display: block;
+       margin-bottom: calc(var(--space-xl) * 1.9);
    }
    
    .scroll-indicator {
        position: static;
-       margin-top: calc(var(--space-3xl) * 2);
+       margin-top: var(--space-lg);
        transform: none;
-       padding-top: calc(var(--space-lg) * 2);
    }
    
    .education-cards {
@@ -1659,8 +1659,8 @@ p {
    }
    
    .affiliation-logo {
-       width: 45px;
-       height: 45px;
+       width: 70px;
+       height: 50px;
    }
    
    .affiliation-name {
